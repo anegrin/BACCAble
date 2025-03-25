@@ -4,7 +4,6 @@
 	#include <string.h>
 	#include "error.h"
 	#include "can.h"
-	#include "printf.h"
 
 	#include "main.h"
 
