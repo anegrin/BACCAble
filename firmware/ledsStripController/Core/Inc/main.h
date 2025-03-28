@@ -85,6 +85,12 @@
 
 
 		#if defined(SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE)
+#ifdef SMALL_DISPLAY
+#define DASHBOARD_MESSAGE_MAX_LENGTH 18
+#else
+#define DASHBOARD_MESSAGE_MAX_LENGTH 26
+#endif
+
 			typedef struct{
 				uint8_t		name[15];
 				uint32_t 	reqId;
@@ -100,15 +106,15 @@
 				uint8_t		replyDecimalDigits;
 
 			} uds_param_element;
+			typedef struct{
+				uds_param_element elements[2];
+				float latestValues[2];
+				const uint8_t **message_fragments;
+			} dashboard_entry;
 
 			void sendDashboardPageToSlaveBaccable(float param);
 		#endif
 
-		#ifdef SMALL_DISPLAY
-		#define DASHBOARD_MESSAGE_MAX_LENGTH 18
-		#else
-		#define DASHBOARD_MESSAGE_MAX_LENGTH 26
-		#endif
 
 
 

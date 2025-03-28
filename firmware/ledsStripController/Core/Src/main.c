@@ -107,6 +107,54 @@ const char *FW_VERSION="BACCABLE V.2.4";  //this is used to store FW version, al
 
 #if defined(SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE)
  #if defined(IS_DIESEL)
+
+	const uint8_t *FIRMWARE_FRAGMENTS = {};
+	const uint8_t POWER_FRAGMENTS_0[] = {'P','o','w','e','r',':',' ',};
+	const uint8_t POWER_FRAGMENTS_1[] = {};
+	const uint8_t POWER_FRAGMENTS_2[] = {'h','p'};
+	const uint8_t *POWER_FRAGMENTS[3] = {POWER_FRAGMENTS_0, POWER_FRAGMENTS_1,POWER_FRAGMENTS_2};
+
+	const dashboard_entry dashboard_entries[] = {
+			{
+					.message_fragments = &FIRMWARE_FRAGMENTS,
+					.elements = {
+							{
+									.name={},
+									.reqId=0,
+									.reqLen=0,
+									.reqData=0,
+									.replyId=0,
+									.replyLen=0,
+									.replyOffset=0,
+									.replyValOffset=0,
+									.replyScale=1,
+									.replyScaleOffset=0,
+									.replyDecimalDigits=0,
+									.replyMeasurementUnit={}
+							}
+					}
+			},
+			{
+					.message_fragments = &FIRMWARE_FRAGMENTS,
+					.elements = {
+							{
+									.name={},
+									.reqId=0x11,
+									.reqLen=4,
+									.reqData=SWAP_UINT32(0x00000000),
+									.replyId=0x000000FB,
+									.replyLen=2,
+									.replyOffset=0,
+									.replyValOffset=-500,
+									.replyScale=0.000142378,
+									.replyScaleOffset=0,
+									.replyDecimalDigits=1,
+									.replyMeasurementUnit={'C','V',}
+							} //devo ricordare di moltiplicare il risultato per RPM
+					}
+			}
+	};
+
 	uint8_t total_pages_in_dashboard_menu=34;
 	const	uds_param_element uds_params_array[60]={
 								{.name={}, 															.reqId=0,       .reqLen=0,	.reqData=0,                 			.replyId=0,				.replyLen=0,    .replyOffset=0,	.replyValOffset=0,		.replyScale=1,              .replyScaleOffset=0,    .replyDecimalDigits=0,	.replyMeasurementUnit={}								},
@@ -229,7 +277,7 @@ const char *FW_VERSION="BACCABLE V.2.4";  //this is used to store FW version, al
 #endif
 
 #if (defined(SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE) || defined(SHOW_PARAMS_ON_DASHBOARD) || defined(LOW_CONSUME))
-	uint8_t dashboardPageStringArray[DASHBOARD_MESSAGE_MAX_LENGTH]={' ',}; //used if SHOW_PARAMS_ON_DASHBOARD or SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE is declared - it contains string to print on dashboard
+	uint8_t dashboardPageStringArray[18]={' ',}; //used if SHOW_PARAMS_ON_DASHBOARD or SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE is declared - it contains string to print on dashboard
 
 #endif
 
@@ -299,8 +347,6 @@ uint8_t msg_buf[SLCAN_MTU]; //msg converted in ascii to send over usb
 //uint8_t ButtonPressSequence2[8]={0x90,0x08,0x00,0x08,0x18,0x20,0x18,0x12}; //current password: RES - CC gently up - CC strong up - CC gently up - CC gently down - CC strong down - CC gently down - CC on/off
 
 int main(void){
-
-
 
 	SystemClock_Config(); //set system clocks
 	onboardLed_init(); //initialize onboard leds for debug purposes
@@ -519,7 +565,7 @@ int main(void){
 					can_tx(&telematic_display_info_msg_header, telematic_display_info_msg_data); //transmit the packet
 
 					telematic_display_info_field_frameNumber++; //prepare for next frame to send
-					if( paramsStringCharIndex>=DASHBOARD_MESSAGE_MAX_LENGTH) { //if we sent the entire string
+					if( paramsStringCharIndex>=18) { //if we sent the entire string
 						paramsStringCharIndex=0; //prepare to send first char of the string
 						telematic_display_info_field_frameNumber=0; //prepare to send first frame
 						requestToSendOneFrame -= 1;
@@ -1466,12 +1512,12 @@ int main(void){
 		switch(uds_params_array[dashboardPageIndex].reqId){
 			case 0: //print baccable menu
 				tmpStrLen=strlen(FW_VERSION);
-				if(tmpStrLen>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen=DASHBOARD_MESSAGE_MAX_LENGTH;
+				if(tmpStrLen>18) tmpStrLen=18;
 				memcpy(&uartTxMsg[1],FW_VERSION,tmpStrLen);
 				break;
 			default:
 				tmpStrLen=strlen((const char *)uds_params_array[dashboardPageIndex].name);
-				if(tmpStrLen>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen=DASHBOARD_MESSAGE_MAX_LENGTH; //truncate it. no space left
+				if(tmpStrLen>18) tmpStrLen=18; //truncate it. no space left
 				memcpy(&uartTxMsg[1], &uds_params_array[dashboardPageIndex].name,tmpStrLen); //prepare name of parameter
 				if(param!=-3400000000000000000){ //if different than special value (since special value means no value to send)
 					//scale param still done, we don't need to do it here
@@ -1483,7 +1529,7 @@ int main(void){
 					floatToStr(tmpfloatString,param,uds_params_array[dashboardPageIndex].replyDecimalDigits,sizeof(tmpfloatString));
 					//add param to the page String
 					tmpStrLen2=strlen(tmpfloatString);
-					if(tmpStrLen+tmpStrLen2>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen2=DASHBOARD_MESSAGE_MAX_LENGTH-tmpStrLen; //truncate it. no space left
+					if(tmpStrLen+tmpStrLen2>18) tmpStrLen2=18-tmpStrLen; //truncate it. no space left
 					memcpy(&uartTxMsg[1+tmpStrLen],tmpfloatString,tmpStrLen2);
 
 					//float tmpVal9=200000.45601928209374; ///ADDED FOR TEST.......
@@ -1495,10 +1541,10 @@ int main(void){
 				}
 				//add measurement unit
 				tmpStrLen3=strlen((const char *)uds_params_array[dashboardPageIndex].replyMeasurementUnit);
-				if(tmpStrLen+tmpStrLen2+tmpStrLen3>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen3=DASHBOARD_MESSAGE_MAX_LENGTH-tmpStrLen-tmpStrLen2; //truncate it. no space left
+				if(tmpStrLen+tmpStrLen2+tmpStrLen3>18) tmpStrLen3=18-tmpStrLen-tmpStrLen2; //truncate it. no space left
 				memcpy(&uartTxMsg[1+tmpStrLen+tmpStrLen2],&uds_params_array[dashboardPageIndex].replyMeasurementUnit,tmpStrLen3);
 		}
-		if (tmpStrLen+tmpStrLen2+tmpStrLen3 < DASHBOARD_MESSAGE_MAX_LENGTH) { //if required pad with zeros
+		if (tmpStrLen+tmpStrLen2+tmpStrLen3 < 18) { //if required pad with zeros
 			memset(&uartTxMsg[1+tmpStrLen+tmpStrLen2+tmpStrLen3], 0, UART_BUFFER_SIZE-(1+tmpStrLen+tmpStrLen2+tmpStrLen3)); //set to zero remaining chars
 		}
 		//CDC_Transmit_FS(dashboardPageStringArray, tmpStrLen+tmpStrLen2+tmpStrLen3+1); //send it over usb
