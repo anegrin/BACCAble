@@ -6,6 +6,7 @@
 # outputs
 Debug
 Release
+build
 SavvyCAN-Windows_x64
 
 # temp files
