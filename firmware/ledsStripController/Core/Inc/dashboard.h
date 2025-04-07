@@ -20,7 +20,7 @@ typedef struct {
 } DashboardItem;
 
 void encodeToMessage(uint8_t* buffer, uint8_t bufferOffset, uint8_t itemId, float firstValue, float secondValue);
-void decodeToItemLabel(uint8_t* buffer, uint8_t bufferOffset, char* labelBuffer, uint8_t labelBufferMaxLength);
+uint8_t decodeToItemLabel(uint8_t* buffer, uint8_t bufferOffset, char* labelBuffer, uint8_t labelBufferMaxLength);
 
 static const DashboardItem CLEANUP_ITEM = { .id = 0 };
 static const DashboardItem FIRMWARE_ITEM = { .id = 1, .pattern = "BACCAble 3.0" };
@@ -32,7 +32,7 @@ static const DashboardItem DPF_REG_ITEM = { .id = 6, .pattern = "DPF reg: %.0f%%
 static const DashboardItem DPF_DIST_ITEM = { .id = 7, .pattern = "DPF dist: %.0fkm" };
 static const DashboardItem DPF_COUNT_ITEM = { .id = 8, .pattern = "DPF count: %.0f" };
 static const DashboardItem DPF_AVG_DIST_ITEM = { .id = 9, .pattern = "DPF avg: %.0fkm" };
-static const DashboardItem DPF_AVG_TIME_ITEM = { .id = 10, .pattern = "DPF avg: %.0fmin" };
+static const DashboardItem DPF_AVG_DURATION_ITEM = { .id = 10, .pattern = "DPF avg: %.0fmin" };
 static const DashboardItem BATTERY_V_ITEM = { .id = 11, .pattern = "Battery: %.2fV" };
 static const DashboardItem BATTERY_P_ITEM = { .id = 12, .pattern = "Battery: %.0f%%" };
 static const DashboardItem BATTERY_A_ITEM = { .id = 13, .pattern = "Battery: %.2fA" };

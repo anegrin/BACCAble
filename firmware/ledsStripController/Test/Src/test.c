@@ -52,7 +52,8 @@ static void test_decodeToItemLabelNoValues(void **state) {
 
 	char labelBuffer[18];
 
-	decodeToItemLabel(buffer, offset, labelBuffer, 18);
+	uint8_t decodedId = decodeToItemLabel(buffer, offset, labelBuffer, 18);
+	assert_int_equal(decodedId, FIRMWARE_ITEM.id);
 
 	assert_string_equal(labelBuffer, "BACCAble 3.0");
 
@@ -69,7 +70,8 @@ static void test_decodeToItemLabelOneValue(void **state) {
 
 	char labelBuffer[18];
 
-	decodeToItemLabel(buffer, offset, labelBuffer, 18);
+	uint8_t decodedId = decodeToItemLabel(buffer, offset, labelBuffer, 18);
+	assert_int_equal(decodedId, HP_ITEM.id);
 
 	assert_string_equal(labelBuffer, "Power: 12.3hp");
 
@@ -86,7 +88,8 @@ static void test_decodeToItemLabelTwoValues(void **state) {
 
 	char labelBuffer[18];
 
-	decodeToItemLabel(buffer, offset, labelBuffer, 18);
+	uint8_t decodedId = decodeToItemLabel(buffer, offset, labelBuffer, 18);
+	assert_int_equal(decodedId, FRONT_TIRES_TEMP_ITEM.id);
 
 	assert_string_equal(labelBuffer, "12°C F.T. 57°C");// 2nd value is rounded
 
@@ -106,7 +109,7 @@ static void test_decodeAllItems(void **state) {
 		    DPF_DIST_ITEM,
 		    DPF_COUNT_ITEM,
 		    DPF_AVG_DIST_ITEM,
-		    DPF_AVG_TIME_ITEM,
+			DPF_AVG_DURATION_ITEM,
 		    BATTERY_V_ITEM,
 		    BATTERY_P_ITEM,
 		    BATTERY_A_ITEM,
@@ -159,7 +162,8 @@ static void test_decodeAllItems(void **state) {
 		DashboardItem item = items[i];
 		char *label = labels[i];
 		encodeToMessage(buffer, offset, item.id, 12.34f, 56.78f);
-		decodeToItemLabel(buffer, offset, labelBuffer, 19);
+		uint8_t decodedId = decodeToItemLabel(buffer, offset, labelBuffer, 19);
+		assert_int_equal(decodedId, item.id);
 		assert_string_equal(labelBuffer, label);
 	}
 

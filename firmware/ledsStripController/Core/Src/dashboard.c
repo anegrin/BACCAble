@@ -69,8 +69,8 @@ const char* itemLabelFormat(uint8_t itemId) {
 		return DPF_COUNT_ITEM.pattern;
 	else if (itemId == DPF_AVG_DIST_ITEM.id)
 		return DPF_AVG_DIST_ITEM.pattern;
-	else if (itemId == DPF_AVG_TIME_ITEM.id)
-		return DPF_AVG_TIME_ITEM.pattern;
+	else if (itemId == DPF_AVG_DURATION_ITEM.id)
+		return DPF_AVG_DURATION_ITEM.pattern;
 	else if (itemId == BATTERY_V_ITEM.id)
 		return BATTERY_V_ITEM.pattern;
 	else if (itemId == BATTERY_P_ITEM.id)
@@ -113,7 +113,7 @@ char floatToGear(float num) {
 	}
 }
 
-void decodeToItemLabel(uint8_t *buffer, uint8_t bufferOffset, char *labelBuffer, uint8_t labelBufferMaxLength) {
+uint8_t decodeToItemLabel(uint8_t *buffer, uint8_t bufferOffset, char *labelBuffer, uint8_t labelBufferMaxLength) {
 
 	uint8_t decodedItemId;
 	float decodedFirstValue;
@@ -129,4 +129,6 @@ void decodeToItemLabel(uint8_t *buffer, uint8_t bufferOffset, char *labelBuffer,
 	} else {
 		snprintf(labelBuffer, labelBufferMaxLength, format, decodedFirstValue, decodedSecondValue);
 	}
+
+	return decodedItemId;
 }

@@ -87,7 +87,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 						break;
 					case BhBusIDparamString: //message directed to baccable connected to BH bus in order to transfer a parameter to print
 							#if defined(SHOW_PARAMS_ON_DASHBOARD)
-								memcpy(&dashboardPageStringArray[0], &rxBuffer[1], 18); //copy array that we will use in the main
+								memset(dashboardPageStringArray, '\0', sizeof(dashboardPageStringArray));
+								uint8_t decodedId = decodeToItemLabel(rxBuffer, 1, (char*)dashboardPageStringArray, 18);
 								if (requestToSendOneFrame<=2) requestToSendOneFrame +=1;//Send one frame
 							#endif
 						break;

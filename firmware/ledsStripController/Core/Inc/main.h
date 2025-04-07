@@ -10,22 +10,23 @@
 		#include "can.h"
 		#include "slcan.h"
 		#include "math.h"
+		#include "dashboard.h"
 
 		//#define ACT_AS_CANABLE //uncomment this to use the canable connected to the pc, as a usb-can adapter, for sniffing purposes
-		#define SMART_DISABLE_START_STOP //this works only on C1 can bus (OBD port pins 6 and 14) - comment this if you don't want to use start&stop disabling with can message
+		//#define SMART_DISABLE_START_STOP //this works only on C1 can bus (OBD port pins 6 and 14) - comment this if you don't want to use start&stop disabling with can message
 		//#define DISABLE_START_STOP //uncomment this if you want to use start&stop disabling with external resistor simulating button press. this is left just in case the smart approach on some cars dont't work.
 
-		#define IMMOBILIZER_ENABLED //this works only on C1 can bus (OBD port pins 6 and 14) //comment this if you don't want immobilizer functionality. This functionality waits for a thief to connect to RFHUB and if the connection message is found, it resets the rfhub and it starts the Panic alarm.
-		#define LED_STRIP_CONTROLLER_ENABLED //this was tested only on C1 can bus (OBD port pins 6 and 14) //comment this if you don't want led strip controller functionality //NOTE: it can not be used with USE_AS_CANABLE cause both uses usb port
+		//#define IMMOBILIZER_ENABLED //this works only on C1 can bus (OBD port pins 6 and 14) //comment this if you don't want immobilizer functionality. This functionality waits for a thief to connect to RFHUB and if the connection message is found, it resets the rfhub and it starts the Panic alarm.
+		//#define LED_STRIP_CONTROLLER_ENABLED //this was tested only on C1 can bus (OBD port pins 6 and 14) //comment this if you don't want led strip controller functionality //NOTE: it can not be used with USE_AS_CANABLE cause both uses usb port
 		//#define SHIFT_INDICATOR_ENABLED //this was tested only on C1 can bus (OBD port pins 6 and 14) //comment this line if you don't want to show shift indicator when rpm motor goes over the configurable threshold SHIFT_THRESHOLD (in race mode)
-		#define SHIFT_THRESHOLD 2500 //this is the configurable shift threshold. 2 more thresholds are automatically defined: 500rpm and 1000 rpm higher than SHIFT_THRESHOLD value
+		//#define SHIFT_THRESHOLD 2500 //this is the configurable shift threshold. 2 more thresholds are automatically defined: 500rpm and 1000 rpm higher than SHIFT_THRESHOLD value
 		//#define IPC_MY23_IS_INSTALLED //this is used in SHIFT_INDICATOR_ENABLED functionality, if you are using IPC for My23 Giulia/Stelvio
-		//#define SHOW_PARAMS_ON_DASHBOARD //this works only on BH can bus (obd port pin 3 and pin 11) //--// uncomment this if you connected another baccable to usb port and want this baccable to receive parameters from master baccable. Received parameter will be displaied on the dashboard.
+		#define SHOW_PARAMS_ON_DASHBOARD //this works only on BH can bus (obd port pin 3 and pin 11) //--// uncomment this if you connected another baccable to usb port and want this baccable to receive parameters from master baccable. Received parameter will be displaied on the dashboard.
 
-		#define SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE //this works only on C1 can bus (OBD port pins 6 and 14) //uncomment this if you connected another baccable to usb port and want this baccable to send parameters to slave baccable (the slave will display parameter on the dashboard). if defined, the cruise control buttons + and - will change the shown parameter
-		#define IS_DIESEL //if uncommented uses parameters for DIESEL engine, otherwise it uses parameters for GASOLINE engine
+		//#define SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE //this works only on C1 can bus (OBD port pins 6 and 14) //uncomment this if you connected another baccable to usb port and want this baccable to send parameters to slave baccable (the slave will display parameter on the dashboard). if defined, the cruise control buttons + and - will change the shown parameter
+		//#define IS_DIESEL //if uncommented uses parameters for DIESEL engine, otherwise it uses parameters for GASOLINE engine
 
-		#define ROUTE_MSG //this define performs the following:
+		//#define ROUTE_MSG //this define performs the following:
 							// upon receive of UDS request with message id 0x18DABAF1 having message data 0622xzyyyyyyyy,
 							// Baccable will understand the following:
 							// 0x18DABAF1 identifies that the message is a Route request (request to route a native message to the diagnostic)
@@ -47,7 +48,7 @@
 
 		#define UCAN_BOARD_LED_INVERSION //on ucan fysect board the led onboard are physically connected differently (status is inverted)
 
-		#define LOW_CONSUME //used only by new Baccable PCB. If defined, the master board on C1 bus will put other 2 chips and the other 2 can transceivers to sleep.
+		//#define LOW_CONSUME //used only by new Baccable PCB. If defined, the master board on C1 bus will put other 2 chips and the other 2 can transceivers to sleep.
 
 		//experimental: it still do not work. don't use it!
 		//#define REMOTE_START_ENABLED //if uncommented, the car can be powered on by remote by means of the original key
@@ -84,6 +85,7 @@
 
 		#if defined(SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE)
 			typedef struct{
+				DashboardItem item;
 				uint8_t		name[15];
 				uint32_t 	reqId;
 				uint8_t		reqLen;
@@ -96,7 +98,6 @@
 				int32_t		replyScaleOffset;
 				uint8_t		replyMeasurementUnit[7];
 				uint8_t		replyDecimalDigits;
-
 			} uds_param_element;
 
 			void sendDashboardPageToSlaveBaccable(float param);
