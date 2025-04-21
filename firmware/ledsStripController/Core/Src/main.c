@@ -15,7 +15,7 @@
 	#include "lowConsume.h"
 	extern uint32_t lastReceivedCanMsgTime;
 #endif
-const char *FW_VERSION="BACCABLE V.2.5";  //this is used to store FW version, also shown on usb when used as slcan
+const char *FW_VERSION="BACCABLE ©.®.°";  //this is used to store FW version, also shown on usb when used as slcan
 
 
 
@@ -741,12 +741,27 @@ int main(void){
 			telematic_display_info_msg_data[1]=(telematic_display_info_msg_data[1] & ~0xC0) | ((telematic_display_info_field_frameNumber<<6) & 0xC0);
 
 			//UTF text 1 is on byte 2 and byte 3
+			telematic_display_info_msg_data[2]=0;
+			if (paramsStringCharIndex<DASHBOARD_MESSAGE_MAX_LENGTH-1 && isUTF8Pair(dashboardPageStringArray[paramsStringCharIndex], dashboardPageStringArray[paramsStringCharIndex + 1])) {
+				telematic_display_info_msg_data[2]=dashboardPageStringArray[paramsStringCharIndex];
+				paramsStringCharIndex++; //prepare to send next char
+			}
 			telematic_display_info_msg_data[3]=dashboardPageStringArray[paramsStringCharIndex];
 			paramsStringCharIndex++; //prepare to send next char
 			//UTF text 2 is on byte 4 (set to zero ) and byte 5
+			telematic_display_info_msg_data[4]=0;
+			if (paramsStringCharIndex<DASHBOARD_MESSAGE_MAX_LENGTH-1 && isUTF8Pair(dashboardPageStringArray[paramsStringCharIndex], dashboardPageStringArray[paramsStringCharIndex + 1])) {
+				telematic_display_info_msg_data[4]=dashboardPageStringArray[paramsStringCharIndex];
+				paramsStringCharIndex++; //prepare to send next char
+			}
 			telematic_display_info_msg_data[5]=dashboardPageStringArray[paramsStringCharIndex];
 			paramsStringCharIndex++; //prepare to send next char
 			//UTF text 3 is on byte 6 (set to zero) and byte 7
+			telematic_display_info_msg_data[6]=0;
+			if (paramsStringCharIndex<DASHBOARD_MESSAGE_MAX_LENGTH-1 && isUTF8Pair(dashboardPageStringArray[paramsStringCharIndex], dashboardPageStringArray[paramsStringCharIndex + 1])) {
+				telematic_display_info_msg_data[6]=dashboardPageStringArray[paramsStringCharIndex];
+				paramsStringCharIndex++; //prepare to send next char
+			}
 			telematic_display_info_msg_data[7]=dashboardPageStringArray[paramsStringCharIndex];
 			paramsStringCharIndex++; //prepare to send next char
 			//send it
@@ -2835,6 +2850,11 @@ void floatToStr(char* str, float num, uint8_t precision, uint8_t maxLen) {
     } else if (maxLen > 0) {
         str[maxLen - 1] = '\0';
     }
+}
+
+bool isUTF8Pair(uint8_t b1, uint8_t b2) {
+    return (b1 & 0xE0) == 0xC0 && // 110xxxxx
+           (b2 & 0xC0) == 0x80;   // 10xxxxxx
 }
 
 uint8_t calculateCRC(uint8_t* data, uint8_t arraySize) {

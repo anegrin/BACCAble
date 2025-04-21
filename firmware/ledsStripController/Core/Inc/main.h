@@ -13,6 +13,7 @@
 		#include "can.h"
 		#include "slcan.h"
 		#include "math.h"
+		#include <stdbool.h>
 
 		//WARNING: ACT_AS_CANABLE takes a lot of time to buffer and send packets to usb, therefore the main
 		//         loop time duration increases. If you have C1baccable or C2baccable or BHbaccable, therefore can messages will
@@ -187,6 +188,7 @@
 
 	float scaleVolume(uint8_t vol);
 	void floatToStr(char* str, float num, uint8_t precision,uint8_t maxLen);
+	bool isUTF8Pair(uint8_t first, uint8_t second);
 	uint8_t scaleColorSet(uint8_t col);
 	uint8_t saveOnflash();
 	uint16_t readFromFlash(uint8_t paramId);
