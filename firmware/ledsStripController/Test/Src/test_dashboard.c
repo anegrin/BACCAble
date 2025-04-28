@@ -6,6 +6,7 @@
 #include <string.h>
 #include <cmocka.h>
 #include <unistd.h>
+
 #include "dashboard.h"
 
 void _putchar(char character){
