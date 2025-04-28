@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include "uart.h"
 #include "stm32f0xx_hal.h"
 #include "main.h"
@@ -103,7 +104,42 @@ void uart_init(){
     // **Enable the interrupt in the NVIC (if not already set in CubeMX)**
     HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(USART2_IRQn);
-    //onboardLed_blue_blink(10); //ok
+    //onboardLed_blue_b	link(10); //ok
+}
+
+bool isRestZero(uint8_t *buffer, uint8_t bufferSize, uint8_t offset) {
+    for (int i = offset; i < bufferSize; i++) {
+        if (buffer[i] != 0) return false;
+    }
+    return true;
+}
+
+bool validateRxBuffer(uint8_t *buffer){
+	uint8_t requestId = buffer[0];
+
+	switch(requestId) {
+		case C1BusID:
+		case C2BusID:
+			bool hasValidCmd = (
+				buffer[1] == C2cmdtoggleDyno || 
+				buffer[1] == C2cmdNormalFrontBrake || 
+				buffer[1] == C2cmdForceFrontBrake || 
+				buffer[1] == C2cmdGetStatus || 
+				buffer[1] == C2cmdtoggleEscTc
+			);
+			return hasValidCmd && isRestZero(buffer, UART_BUFFER_SIZE, 2);
+		case AllSleep:
+		case C2BusIDAllSleepAck:
+		case BHBusIDAllSleepAck:
+		case AllResetFaults:
+		case BhBusIDgetStatus:
+		case BhBusChimeRequest:
+			return isRestZero(buffer, UART_BUFFER_SIZE, 1);
+		case BhBusIDparamString:
+			return true; //we'll validate the message later with decodeToItemLabel
+		default:
+			return false;
+	}
 }
 
 
@@ -111,7 +147,7 @@ void uart_init(){
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART2) {
 		// evaluate received message
-    	if((rxBuffer[0]>=C1BusID) && (rxBuffer[0]<=BhBusChimeRequest)){ //if the received char indicates the beginning of a message
+    	if(validateRxBuffer(rxBuffer)){ //if the received char indicates the beginning of a message
 			if(syncObtained){ //if we were sync, we can process the message, since the first char is correct and the sync indicates that te remaining part too is complete
 				#if defined(ACT_AS_CANABLE)
 					onboardLed_blue_on();
