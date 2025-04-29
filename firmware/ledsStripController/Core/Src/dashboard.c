@@ -7,25 +7,8 @@
  #include "stdbool.h"
 
  const uint8_t PROTO_MARKER = 0x1F;
- const uint8_t GEARS[]={'N','1','2','3','4','5','6','R','7','8','9'};
- 
- uint8_t calculate_crc8(const uint8_t *data, uint8_t offset, uint8_t length) {
-    uint8_t crc = 0x00;
 
-    for (size_t i = offset; i < length; i++) {
-        crc ^= data[i];
-        for (uint8_t bit = 0; bit < 8; bit++) {
-            if (crc & 0x80) { // if the top bit is set
-                crc = (crc << 1) ^ 0x07; //polynomial x^8 + x^2 + x + 1
-            } else {
-                crc <<= 1;
-            }
-        }
-    }
-    return crc;
-}
-
- void encodeToMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId,
+void encodeToMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId,
          float firstValue, float secondValue) {
 
     uint8_t protoIndex = bufferOffset;
@@ -48,14 +31,12 @@
          memcpy(&buffer[secondValueIndex], &secondValue,
                  DASHBOARD_SIZE_OF_FLOAT);
      }
-
-     uint8_t crcIndex = secondValueIndex + DASHBOARD_SIZE_OF_FLOAT;
-     if (bufferSize > crcIndex) {
-        buffer[crcIndex] = calculate_crc8(buffer, bufferOffset, crcIndex);
-    }
 }
- 
- bool decodeFromMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t *itemId,
+
+#ifdef BHbaccable
+const uint8_t GEARS[]={'N','1','2','3','4','5','6','R','7','8','9'};
+
+bool decodeFromMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t *itemId,
          float *firstValue, float *secondValue) {
  
     uint8_t protoIndex = bufferOffset;
@@ -87,14 +68,8 @@
      } else {
          *secondValue = NAN_FLOAT;
      }
-
-     uint8_t crcIndex = secondValueIndex + DASHBOARD_SIZE_OF_FLOAT;
-     if (bufferSize > crcIndex) {
-        uint8_t crc = calculate_crc8(buffer, bufferOffset, crcIndex);
-        return crc == buffer[crcIndex]; 
-    } else {
-        return false;
-    }
+     
+     return true;
  }
  
  const char* itemLabelFormat(uint8_t itemId) {
@@ -176,3 +151,4 @@
         return 0;
     }
 }
+#endif

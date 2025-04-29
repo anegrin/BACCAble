@@ -3,24 +3,17 @@
  *
  */
 
- #ifndef INC_DASHBOARD_H_
- #define INC_DASHBOARD_H_
- 
- #include "stdint.h"
- #include "string.h"
- #include "printf.h"
- 
- static const int DASHBOARD_SIZE_OF_FLOAT = sizeof(float);
- static const float NAN_FLOAT = 0.0f / 0.0f;
- 
- 
- typedef struct {
-     uint8_t		id;
-     char		*pattern;
- } DashboardItem;
- 
- void encodeToMessage(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId, float firstValue, float secondValue);
- uint8_t decodeToItemLabel(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, char* labelBuffer, uint8_t labelBufferMaxLength);
+#ifndef INC_DASHBOARD_H_
+#define INC_DASHBOARD_H_
+
+#include "stdint.h"
+#include "string.h"
+#include "printf.h"
+
+static const int DASHBOARD_SIZE_OF_FLOAT = sizeof(float);
+static const float NAN_FLOAT = 0.0f / 0.0f;
+
+void encodeToMessage(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId, float firstValue, float secondValue);
 
 static const uint8_t CLEANUP_ITEM_ID=0;
 static const uint8_t FIRMWARE_ITEM_ID=1;
@@ -46,6 +39,13 @@ static const uint8_t FRONT_TIRES_TEMP_ITEM_ID=20;
 static const uint8_t REAR_TIRES_TEMP_ITEM_ID=21; 
 
 #ifdef BHbaccable
+typedef struct {
+    uint8_t		id;
+    char		*pattern;
+} DashboardItem;
+
+uint8_t decodeToItemLabel(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, char* labelBuffer, uint8_t labelBufferMaxLength);
+
 static const DashboardItem CLEANUP_ITEM = { .id = CLEANUP_ITEM_ID };
 static const DashboardItem FIRMWARE_ITEM = { .id = FIRMWARE_ITEM_ID, .pattern = "BACCAble 3.0" };
 static const DashboardItem HP_ITEM = { .id = HP_ITEM_ID, .pattern = "Power: %.1fhp" };

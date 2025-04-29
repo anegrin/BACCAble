@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include "uart_helper.h"
 #include "uart.h"
 #include "stm32f0xx_hal.h"
 #include "main.h"
@@ -107,11 +108,8 @@ void uart_init(){
     //onboardLed_blue_b	link(10); //ok
 }
 
-bool isRestZero(uint8_t *buffer, uint8_t bufferSize, uint8_t offset) {
-    for (int i = offset; i < bufferSize; i++) {
-        if (buffer[i] != 0) return false;
-    }
-    return true;
+bool isCRCValid(uint8_t *buffer, uint8_t bufferSize) {
+    buffer[bufferSize - 1] == calculate_crc8(buffer, bufferSize - 1);
 }
 
 bool validateRxBuffer(uint8_t *buffer){
@@ -127,16 +125,16 @@ bool validateRxBuffer(uint8_t *buffer){
 				buffer[1] == C2cmdGetStatus || 
 				buffer[1] == C2cmdtoggleEscTc
 			);
-			return hasValidCmd && isRestZero(buffer, UART_BUFFER_SIZE, 2);
+			return hasValidCmd && isCRCValid(buffer, UART_BUFFER_SIZE);
 		case AllSleep:
 		case C2BusIDAllSleepAck:
 		case BHBusIDAllSleepAck:
 		case AllResetFaults:
 		case BhBusIDgetStatus:
 		case BhBusChimeRequest:
-			return isRestZero(buffer, UART_BUFFER_SIZE, 1);
+			return isCRCValid(buffer, UART_BUFFER_SIZE);
 		case BhBusIDparamString:
-			return true; //we'll validate the message later with decodeToItemLabel
+			return isCRCValid(buffer, UART_BUFFER_SIZE);
 		default:
 			return false;
 	}
@@ -332,13 +330,10 @@ uint8_t getOtherProcessorsSleepingStatus(){
 }
 */
 
-
 void addToUARTSendQueue(const uint8_t *data, size_t length) {
 
 	if (tx_queue->count < QUEUE_SIZE) {  // Controlla se la coda è piena
-		memset(tx_queue->tx_buffer[tx_queue->tail], 0x20, UART_BUFFER_SIZE);
-		if (length>UART_BUFFER_SIZE) length= UART_BUFFER_SIZE;
-		memcpy(tx_queue->tx_buffer[tx_queue->tail], data, length);
+		fill_buffer(tx_queue->tx_buffer[tx_queue->tail], UART_BUFFER_SIZE, data, length);
 		tx_queue->tail = (tx_queue->tail + 1) % QUEUE_SIZE;
 		tx_queue->count++;
 	} else {
