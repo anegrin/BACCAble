@@ -33,6 +33,10 @@ bool validateRxBuffer(uint8_t *buffer, uint8_t bufferLength){
 
 	switch(requestId) {
 		case C1BusID:
+			return (
+				buffer[1] == C2cmdNormalFrontBrake || 
+				buffer[1] == C2cmdForceFrontBrake	
+			) && isCRCValid(buffer, bufferLength);
 		case C2BusID:
 
 			return (
