@@ -10,7 +10,7 @@
 
 
 # SOURCES: list of sources in the user application
-SOURCES = main.c can.c lowConsume.c onboardLed.c slcan.c stm32f0xx_it.c sysmem.c uart_helper.c uart.c error.c printf.c stm32f0xx_hal_msp.c syscalls.c system_stm32f0xx.c vuMeter.c dashboard.c
+SOURCES = main.c can.c lowConsume.c onboardLed.c slcan.c stm32f0xx_it.c sysmem.c uart_proto.c uart.c error.c printf.c stm32f0xx_hal_msp.c syscalls.c system_stm32f0xx.c vuMeter.c dashboard.c
 USB_SOURCES_APP = usb_device.c usbd_cdc_if.c usbd_desc.c
 USB_SOURCES_TARGET = usbd_conf.c
 

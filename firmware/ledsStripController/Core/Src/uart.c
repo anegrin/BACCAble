@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include "uart_helper.h"
 #include "uart.h"
 #include "stm32f0xx_hal.h"
 #include "main.h"
@@ -108,44 +107,11 @@ void uart_init(){
     //onboardLed_blue_b	link(10); //ok
 }
 
-bool isCRCValid(uint8_t *buffer, uint8_t bufferSize) {
-    buffer[bufferSize - 1] == calculate_crc8(buffer, bufferSize - 1);
-}
-
-bool validateRxBuffer(uint8_t *buffer){
-	uint8_t requestId = buffer[0];
-
-	switch(requestId) {
-		case C1BusID:
-		case C2BusID:
-			bool hasValidCmd = (
-				buffer[1] == C2cmdtoggleDyno || 
-				buffer[1] == C2cmdNormalFrontBrake || 
-				buffer[1] == C2cmdForceFrontBrake || 
-				buffer[1] == C2cmdGetStatus || 
-				buffer[1] == C2cmdtoggleEscTc
-			);
-			return hasValidCmd && isCRCValid(buffer, UART_BUFFER_SIZE);
-		case AllSleep:
-		case C2BusIDAllSleepAck:
-		case BHBusIDAllSleepAck:
-		case AllResetFaults:
-		case BhBusIDgetStatus:
-		case BhBusChimeRequest:
-			return isCRCValid(buffer, UART_BUFFER_SIZE);
-		case BhBusIDparamString:
-			return isCRCValid(buffer, UART_BUFFER_SIZE);
-		default:
-			return false;
-	}
-}
-
-
 //interrupt called when message is received
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART2) {
 		// evaluate received message
-    	if(validateRxBuffer(rxBuffer)){ //if the received char indicates the beginning of a message
+    	if(validateRxBuffer(rxBuffer, UART_BUFFER_SIZE)){ //if the received char indicates the beginning of a message
 			if(syncObtained){ //if we were sync, we can process the message, since the first char is correct and the sync indicates that te remaining part too is complete
 				#if defined(ACT_AS_CANABLE)
 					onboardLed_blue_on();
