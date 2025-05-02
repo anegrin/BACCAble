@@ -8,7 +8,6 @@
 #endif
 
 #include "uart.h"
-#include "dashboard.h"
 
 #if defined(C1baccable)
 	#include "vuMeter.h" //this is used to control led strip through usb pin
@@ -27,6 +26,8 @@ const char *FW_VERSION=_FW_VERSION;
 
 // force print
 #pragma message ("FW_VERSION: " _FW_VERSION)
+
+#include "dashboard.h"//needs BUILD_VERSION
 
 #if defined(UCAN_BOARD_LED_INVERSION)
 	const uint8_t led_light_on_bit=1;

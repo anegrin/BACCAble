@@ -39,6 +39,7 @@ void encodeToMessage(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, 
 #define REAR_TIRES_TEMP_ITEM_ID 21
 
 #ifdef BHbaccable
+
 typedef struct {
     uint8_t		id;
     char		*pattern;
@@ -47,7 +48,7 @@ typedef struct {
 uint8_t decodeToItemLabel(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, char* labelBuffer, uint8_t labelBufferMaxLength);
 
 static const DashboardItem CLEANUP_ITEM = { .id = CLEANUP_ITEM_ID };
-static const DashboardItem FIRMWARE_ITEM = { .id = FIRMWARE_ITEM_ID, .pattern = "BACCAble 3.0" };
+static const DashboardItem FIRMWARE_ITEM = { .id = FIRMWARE_ITEM_ID, .pattern = "BACCAble " BUILD_VERSION };
 static const DashboardItem HP_ITEM = { .id = HP_ITEM_ID, .pattern = "Power: %.1fhp" };
 static const DashboardItem TORQUE_ITEM = { .id = TORQUE_ITEM_ID, .pattern = "Torque: %.0fnm" };
 static const DashboardItem DPF_CLOG_ITEM = { .id = DPF_CLOG_ITEM_ID, .pattern = "DPF clog: %.0f%%" };

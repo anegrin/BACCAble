@@ -66,16 +66,16 @@
 		#if defined(C1baccable) //this works only on C1 can bus (OBD port pins 6 and 14)
 			#pragma message("Building C1 BACCAble") //adds a message in the compilation log
 
-			#define LOW_CONSUME //master baccable will put other 2 chips and the other 2 can transceivers to sleep.
+			//#define LOW_CONSUME //master baccable will put other 2 chips and the other 2 can transceivers to sleep.
 			#define UCAN_BOARD_LED_INVERSION //uncommented on ucan fysect board (and on new baccable board). the led onboard are physically connected differently (status is inverted)
 
 			//if one of the following will be uncommented, its default status will be enabled. It will be possible to change the status inside SETUP menu.
-			#define IMMOBILIZER_ENABLED //immobilizer will be enabled.
+			//#define IMMOBILIZER_ENABLED //immobilizer will be enabled.
 			#define SMART_DISABLE_START_STOP //start&stop will be automatically disabled with can message
 			//#define DISABLE_START_STOP //start&stop disabling with external resistor simulating button press. this is left just for reference. no more used.
 			//#define LED_STRIP_CONTROLLER_ENABLED //led strip controller functionality
 			//#define SHIFT_INDICATOR_ENABLED //show shift indicator when rpm motor goes over the configurable threshold SHIFT_THRESHOLD (in race mode)
-			#define SHIFT_THRESHOLD 4500 //default shift threshold. 2 more thresholds are automatically defined: 500rpm and 1000 rpm higher than SHIFT_THRESHOLD value
+			//#define SHIFT_THRESHOLD 4500 //default shift threshold. 2 more thresholds are automatically defined: 500rpm and 1000 rpm higher than SHIFT_THRESHOLD value
 			//#define IPC_MY23_IS_INSTALLED //this is used in SHIFT_INDICATOR_ENABLED functionality, if you are using IPC for My23 Giulia/Stelvio
 			#define SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE //Used if you connected another baccable to usb port and want this baccable to send parameters to slave baccable (the slave will display parameter on the dashboard). if defined, the cruise control buttons + and - will change the shown parameter
 			//#define ROUTE_MSG // allows communication with  commercial diagnostic tools to supply internal bus parameters. better described in the manual

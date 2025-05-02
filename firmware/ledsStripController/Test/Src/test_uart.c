@@ -23,6 +23,25 @@ static void clearBuffer() {
 	}
 }
 
+static void test_crc8Precalc(void **state) {
+	uint8_t data[1];
+	for (int i = 0; i<256; i++) {
+		data[0] = i;
+	    uint8_t crc = 0x00;
+		crc ^= data[0];
+		for (uint8_t j = 0; j < 8; j++) {
+			if (crc & 0x80) {
+				crc = (crc << 1) ^ 0x07;
+			} else {
+				crc <<= 1;
+			}
+		}
+		assert_int_equal(crc, calculate_crc8(data, 1));
+	}
+}
+
+
+
 static void test_buffer(void **state, uint8_t a, uint8_t b) {
 	clearBuffer();
 	uint8_t data[2];
@@ -118,6 +137,7 @@ static void test_validateRxBufferC2(void **state) {
 
 int main(void) {
     const struct CMUnitTest tests[] = {
+		cmocka_unit_test(test_crc8Precalc),
 		cmocka_unit_test(test_bufferC2BusID),
 		cmocka_unit_test(test_bufferC1BusID),
 		cmocka_unit_test(test_bufferBHBusID),
