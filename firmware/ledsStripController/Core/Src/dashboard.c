@@ -73,50 +73,52 @@ bool decodeFromMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset
  }
  
  const char* itemLabelFormat(uint8_t itemId) {
-     if (itemId == FIRMWARE_ITEM_ID)
-         return FIRMWARE_ITEM.pattern;
-     else if (itemId == HP_ITEM_ID)
-         return HP_ITEM.pattern;
-     else if (itemId == TORQUE_ITEM_ID)
-         return TORQUE_ITEM.pattern;
-     else if (itemId == DPF_CLOG_ITEM_ID)
-         return DPF_CLOG_ITEM.pattern;
-     else if (itemId == DPF_TEMP_ITEM_ID)
-         return DPF_TEMP_ITEM.pattern;
-     else if (itemId == DPF_REG_ITEM_ID)
-         return DPF_REG_ITEM.pattern;
-     else if (itemId == DPF_DIST_ITEM_ID)
-         return DPF_DIST_ITEM.pattern;
-     else if (itemId == DPF_COUNT_ITEM_ID)
-         return DPF_COUNT_ITEM.pattern;
-     else if (itemId == DPF_AVG_DIST_ITEM_ID)
-         return DPF_AVG_DIST_ITEM.pattern;
-     else if (itemId == DPF_AVG_DURATION_ITEM_ID)
-         return DPF_AVG_DURATION_ITEM.pattern;
-     else if (itemId == BATTERY_V_ITEM_ID)
-         return BATTERY_V_ITEM.pattern;
-     else if (itemId == BATTERY_P_ITEM_ID)
-         return BATTERY_P_ITEM.pattern;
-     else if (itemId == BATTERY_A_ITEM_ID)
-         return BATTERY_A_ITEM.pattern;
-     else if (itemId == OIL_QUALITY_ITEM_ID)
-         return OIL_QUALITY_ITEM.pattern;
-     else if (itemId == OIL_TEMP_ITEM_ID)
-         return OIL_TEMP_ITEM.pattern;
-     else if (itemId == OIL_PRESS_ITEM_ID)
-         return OIL_PRESS_ITEM.pattern;
-     else if (itemId == AIR_IN_ITEM_ID)
-         return AIR_IN_ITEM.pattern;
-     else if (itemId == GEAR_ITEM_ID)
-         return GEAR_ITEM.pattern;
-     else if (itemId == GEARBOX_TEMP_ITEM_ID)
-         return GEARBOX_TEMP_ITEM.pattern;
-     else if (itemId == FRONT_TIRES_TEMP_ITEM_ID)
-         return FRONT_TIRES_TEMP_ITEM.pattern;
-     else if (itemId == REAR_TIRES_TEMP_ITEM_ID)
-         return REAR_TIRES_TEMP_ITEM.pattern;
-     else
-         return "";
+	 switch (itemId) {
+	         case FIRMWARE_ITEM_ID:
+	             return FIRMWARE_ITEM.pattern;
+	         case HP_ITEM_ID:
+	             return HP_ITEM.pattern;
+	         case TORQUE_ITEM_ID:
+	             return TORQUE_ITEM.pattern;
+	         case DPF_CLOG_ITEM_ID:
+	             return DPF_CLOG_ITEM.pattern;
+	         case DPF_TEMP_ITEM_ID:
+	             return DPF_TEMP_ITEM.pattern;
+	         case DPF_REG_ITEM_ID:
+	             return DPF_REG_ITEM.pattern;
+	         case DPF_DIST_ITEM_ID:
+	             return DPF_DIST_ITEM.pattern;
+	         case DPF_COUNT_ITEM_ID:
+	             return DPF_COUNT_ITEM.pattern;
+	         case DPF_AVG_DIST_ITEM_ID:
+	             return DPF_AVG_DIST_ITEM.pattern;
+	         case DPF_AVG_DURATION_ITEM_ID:
+	             return DPF_AVG_DURATION_ITEM.pattern;
+	         case BATTERY_V_ITEM_ID:
+	             return BATTERY_V_ITEM.pattern;
+	         case BATTERY_P_ITEM_ID:
+	             return BATTERY_P_ITEM.pattern;
+	         case BATTERY_A_ITEM_ID:
+	             return BATTERY_A_ITEM.pattern;
+	         case OIL_QUALITY_ITEM_ID:
+	             return OIL_QUALITY_ITEM.pattern;
+	         case OIL_TEMP_ITEM_ID:
+	             return OIL_TEMP_ITEM.pattern;
+	         case OIL_PRESS_ITEM_ID:
+	             return OIL_PRESS_ITEM.pattern;
+	         case AIR_IN_ITEM_ID:
+	             return AIR_IN_ITEM.pattern;
+	         case GEAR_ITEM_ID:
+	             return GEAR_ITEM.pattern;
+	         case GEARBOX_TEMP_ITEM_ID:
+	             return GEARBOX_TEMP_ITEM.pattern;
+	         case FRONT_TIRES_TEMP_ITEM_ID:
+	             return FRONT_TIRES_TEMP_ITEM.pattern;
+	         case REAR_TIRES_TEMP_ITEM_ID:
+	             return REAR_TIRES_TEMP_ITEM.pattern;
+	         default:
+	             return "";
+	     }
  }
  
  char floatToGear(float num) {
@@ -147,6 +149,7 @@ bool decodeFromMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset
 
         return decodedItemId;
     } else {
+    	//old protocol, it's just a string
         snprintf_(labelBuffer, labelBufferMaxLength, "%s", buffer + 1);
         return 0;
     }

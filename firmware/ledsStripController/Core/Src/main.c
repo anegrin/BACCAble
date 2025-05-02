@@ -8,6 +8,7 @@
 #endif
 
 #include "uart.h"
+#include "dashboard.h"
 
 #if defined(C1baccable)
 	#include "vuMeter.h" //this is used to control led strip through usb pin
@@ -2226,7 +2227,6 @@ int main(void){
 
 #if defined(C1baccable)
 	void sendMainDashboardPageToSlaveBaccable(){
-		uint8_t tmpStrLen=0;
 		uartTxMsg[0]= BhBusIDparamString;//first char shall be a # to talk with slave canable connected to BH can bus
 
 		//update records if required
@@ -2287,12 +2287,7 @@ int main(void){
 		//add string to record
 		switch(main_dashboardPageIndex){
 			case 0:
-				tmpStrLen=strlen(FW_VERSION);
-				if(tmpStrLen>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen=DASHBOARD_MESSAGE_MAX_LENGTH;
-				memcpy(&uartTxMsg[1],FW_VERSION,tmpStrLen);
-				if (tmpStrLen < DASHBOARD_MESSAGE_MAX_LENGTH) { //if required pad with spaces
-					memset(&uartTxMsg[1+tmpStrLen], ' ', UART_BUFFER_SIZE-(1+tmpStrLen)); //set to zero remaining chars
-				}
+				encodeToMessage(uartTxMsg, UART_BUFFER_SIZE, 1, FIRMWARE_ITEM_ID, 0.0, 0.0);
 				break;
 			default:
 				memcpy(&uartTxMsg[1], dashboard_main_menu_array[main_dashboardPageIndex],UART_BUFFER_SIZE-1);
@@ -2446,9 +2441,7 @@ int main(void){
 
 		switch(uds_params_array[function_is_diesel_enabled][dashboardPageIndex].reqId){
 			case 0: //print baccable menu
-				tmpStrLen=strlen(FW_VERSION);
-				if(tmpStrLen>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen=DASHBOARD_MESSAGE_MAX_LENGTH;
-				memcpy(&uartTxMsg[1],FW_VERSION,tmpStrLen);
+				encodeToMessage(uartTxMsg, UART_BUFFER_SIZE, 1, FIRMWARE_ITEM_ID, 0.0, 0.0);
 				break;
 			case 0x19:
 				if (uds_params_array[function_is_diesel_enabled][dashboardPageIndex].reqId == 0x19) { //if diesel engine mode status

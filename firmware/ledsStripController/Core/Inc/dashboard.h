@@ -15,28 +15,28 @@ static const float NAN_FLOAT = 0.0f / 0.0f;
 
 void encodeToMessage(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId, float firstValue, float secondValue);
 
-static const uint8_t CLEANUP_ITEM_ID=0;
-static const uint8_t FIRMWARE_ITEM_ID=1;
-static const uint8_t HP_ITEM_ID=2;
-static const uint8_t TORQUE_ITEM_ID=3;
-static const uint8_t DPF_CLOG_ITEM_ID=4;
-static const uint8_t DPF_TEMP_ITEM_ID=5;
-static const uint8_t DPF_REG_ITEM_ID=6;
-static const uint8_t DPF_DIST_ITEM_ID=7;
-static const uint8_t DPF_COUNT_ITEM_ID=8;
-static const uint8_t DPF_AVG_DIST_ITEM_ID=9;
-static const uint8_t DPF_AVG_DURATION_ITEM_ID=10;
-static const uint8_t BATTERY_V_ITEM_ID=11;
-static const uint8_t BATTERY_P_ITEM_ID=12;
-static const uint8_t BATTERY_A_ITEM_ID=13;
-static const uint8_t OIL_QUALITY_ITEM_ID=14;
-static const uint8_t OIL_TEMP_ITEM_ID=15;
-static const uint8_t OIL_PRESS_ITEM_ID=16;
-static const uint8_t AIR_IN_ITEM_ID=17;
-static const uint8_t GEAR_ITEM_ID=18;
-static const uint8_t GEARBOX_TEMP_ITEM_ID=19;
-static const uint8_t FRONT_TIRES_TEMP_ITEM_ID=20;
-static const uint8_t REAR_TIRES_TEMP_ITEM_ID=21; 
+#define CLEANUP_ITEM_ID 0
+#define FIRMWARE_ITEM_ID 1
+#define HP_ITEM_ID 2
+#define TORQUE_ITEM_ID 3
+#define DPF_CLOG_ITEM_ID 4
+#define DPF_TEMP_ITEM_ID 5
+#define DPF_REG_ITEM_ID 6
+#define DPF_DIST_ITEM_ID 7
+#define DPF_COUNT_ITEM_ID 8
+#define DPF_AVG_DIST_ITEM_ID 9
+#define DPF_AVG_DURATION_ITEM_ID 10
+#define BATTERY_V_ITEM_ID 11
+#define BATTERY_P_ITEM_ID 12
+#define BATTERY_A_ITEM_ID 13
+#define OIL_QUALITY_ITEM_ID 14
+#define OIL_TEMP_ITEM_ID 15
+#define OIL_PRESS_ITEM_ID 16
+#define AIR_IN_ITEM_ID 17
+#define GEAR_ITEM_ID 18
+#define GEARBOX_TEMP_ITEM_ID 19
+#define FRONT_TIRES_TEMP_ITEM_ID 20
+#define REAR_TIRES_TEMP_ITEM_ID 21
 
 #ifdef BHbaccable
 typedef struct {
