@@ -33,7 +33,6 @@ void encodeToDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t buffe
      }
 }
 
-#ifdef BHbaccable
 const uint8_t GEARS[]={'N','1','2','3','4','5','6','R','7','8','9'};
 
 bool decodeFromDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t *itemId,
@@ -151,7 +150,6 @@ bool decodeFromDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t buf
     } else {
     	//old protocol, it's just a string
         snprintf_(labelBuffer, labelBufferMaxLength, "%s", buffer + 1);
-        return 0;
+        return UNKNOWN_ITEM_ID;
     }
 }
-#endif

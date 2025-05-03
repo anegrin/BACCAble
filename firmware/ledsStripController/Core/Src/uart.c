@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include "uart.h"
+#include "dashboard.h"
 #include "stm32f0xx_hal.h"
 #include "main.h"
 extern void Error_Handler(void);
@@ -36,7 +37,7 @@ extern uint8_t front_brake_forced;
 extern UART_HandleTypeDef huart2;
 #if defined(BHbaccable)
 	//SHOW_PARAMS_ON_DASHBOARD
-	extern uint8_t dashboardPageStringArray[DASHBOARD_MESSAGE_MAX_LENGTH];
+	extern char dashboardPageStringArray[DASHBOARD_MESSAGE_MAX_LENGTH];
 	extern uint8_t requestToSendOneFrame; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality //set to 1 to send one frame on dashboard
 	//extern uint8_t uartTxMsg[UART_BUFFER_SIZE];  //this variable contains the serial message to send
 	extern uint8_t requestToPlayChime;
@@ -111,8 +112,8 @@ void uart_init(){
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART2) {
 		// evaluate received message
-    	if(validateRxBuffer(rxBuffer, UART_BUFFER_SIZE)){ //if the received char indicates the beginning of a message
-			if(syncObtained){ //if we were sync, we can process the message, since the first char is correct and the sync indicates that te remaining part too is complete
+    	if((rxBuffer[0]>=C1BusID) && (rxBuffer[0]<=BhBusChimeRequest)){ //if the received char indicates the beginning of a message
+			if(syncObtained && validateRxBuffer(rxBuffer, UART_BUFFER_SIZE)){ //if we were sync, we can process the message, since the first char is correct and the sync indicates that te remaining part too is complete
 				#if defined(ACT_AS_CANABLE)
 					onboardLed_blue_on();
 				#endif
@@ -156,7 +157,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 					case BhBusIDparamString: //message directed to baccable connected to BH bus in order to transfer a parameter to print
 							#if defined(BHbaccable)
 								weCanSendAMessageReply=HAL_GetTick();
-								memcpy(&dashboardPageStringArray[0], &rxBuffer[1], DASHBOARD_MESSAGE_MAX_LENGTH); //copy array that we will use in the main
+
+								uint8_t decodedId = decodeToItemLabel(rxBuffer, UART_BUFFER_SIZE, 1, dashboardPageStringArray, DASHBOARD_MESSAGE_MAX_LENGTH);
+
+								if (decodedId == CLEANUP_ITEM_ID) {
+									//we might wanna do additional cleaning
+								}
+
 
 								if (requestToSendOneFrame<=2) requestToSendOneFrame +=1;//Send one frame
 

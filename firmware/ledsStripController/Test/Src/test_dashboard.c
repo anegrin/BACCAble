@@ -56,7 +56,7 @@ static void test_decodeOldProto(void **state) {
 
 	uint8_t decodedId = decodeToItemLabel(buffer, 25, offset, labelBuffer, 18);
 
-	assert_int_equal(decodedId, 0);
+	assert_int_equal(decodedId, UNKNOWN_ITEM_ID);
 
 	assert_string_equal(labelBuffer, "Hey!");
 

@@ -15,6 +15,7 @@ static const float NAN_FLOAT = 0.0f / 0.0f;
 
 void encodeToDashboardMessage(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId, float firstValue, float secondValue);
 
+#define UNKNOWN_ITEM_ID 255
 #define CLEANUP_ITEM_ID 0
 #define FIRMWARE_ITEM_ID 1
 #define HP_ITEM_ID 2
@@ -47,7 +48,7 @@ typedef struct {
     char		*pattern;
 } DashboardItem;
 
-uint8_t decodeToItemLabel(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, char* labelBuffer, uint8_t labelBufferMaxLength);
+uint8_t decodeToItemLabel(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, char *labelBuffer, uint8_t labelBufferMaxLength);
 
 static const DashboardItem CLEANUP_ITEM = { .id = CLEANUP_ITEM_ID };
 static const DashboardItem FIRMWARE_ITEM = { .id = FIRMWARE_ITEM_ID, .pattern = "BACCAble " BUILD_VERSION };
