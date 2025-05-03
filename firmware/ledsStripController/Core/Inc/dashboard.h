@@ -13,7 +13,7 @@
 static const int DASHBOARD_SIZE_OF_FLOAT = sizeof(float);
 static const float NAN_FLOAT = 0.0f / 0.0f;
 
-void encodeToMessage(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId, float firstValue, float secondValue);
+void encodeToDashboardMessage(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId, float firstValue, float secondValue);
 
 #define CLEANUP_ITEM_ID 0
 #define FIRMWARE_ITEM_ID 1
@@ -38,7 +38,9 @@ void encodeToMessage(uint8_t* buffer, uint8_t bufferSize, uint8_t bufferOffset, 
 #define FRONT_TIRES_TEMP_ITEM_ID 20
 #define REAR_TIRES_TEMP_ITEM_ID 21
 
-#ifdef BHbaccable
+#ifndef BUILD_VERSION //compile time define with -D OR defined in previous include
+#define BUILD_VERSION "???"
+#endif
 
 typedef struct {
     uint8_t		id;
@@ -69,6 +71,5 @@ static const DashboardItem GEAR_ITEM = { .id = GEAR_ITEM_ID, .pattern = "Current
 static const DashboardItem GEARBOX_TEMP_ITEM = { .id = GEARBOX_TEMP_ITEM_ID, .pattern = "Gearbox: %.0f°C" };
 static const DashboardItem FRONT_TIRES_TEMP_ITEM = { .id = FRONT_TIRES_TEMP_ITEM_ID, .pattern = "%.0f°C F.T. %.0f°C" };
 static const DashboardItem REAR_TIRES_TEMP_ITEM = { .id = REAR_TIRES_TEMP_ITEM_ID, .pattern = "%.0f°C R.T. %.0f°C" };
-#endif
 
 #endif /* INC_DASHBOARD_H_ */

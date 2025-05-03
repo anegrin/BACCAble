@@ -350,7 +350,7 @@ uint16_t indiceTmp=33;
 	uint32_t lastSentTelematic_display_info_msg_Time=0; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality.
 	uint8_t telematic_display_info_field_totalFrameNumber=(DASHBOARD_MESSAGE_MAX_LENGTH / 3) - 1; //it shall be a multiple of 3 reduced by 1 (example: 3x2-1=5) //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
 	uint8_t telematic_display_info_field_frameNumber=0; //current frame //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
-	uint8_t telematic_display_info_field_infoCode=0x09; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
+	uint8_t telematic_display_info_field_infoCode=0x07; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
 	uint8_t paramsStringCharIndex=0; // next char to send index - Used with SHOW_PARAMS_ON_DASHBOARD define functionality.
 	CAN_TxHeaderTypeDef telematic_display_info_msg_header={.IDE=CAN_ID_STD, .RTR = CAN_RTR_DATA, .StdId=0x090, .DLC=8}; //used when SHOW_PARAMS_ON_DASHBOARD is defined
 	uint8_t telematic_display_info_msg_data[8]; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
@@ -2228,6 +2228,7 @@ int main(void){
 
 #if defined(C1baccable)
 	void sendMainDashboardPageToSlaveBaccable(){
+		uint8_t tmpStrLen=0;
 		uartTxMsg[0]= BhBusIDparamString;//first char shall be a # to talk with slave canable connected to BH can bus
 
 		//update records if required
@@ -2288,7 +2289,12 @@ int main(void){
 		//add string to record
 		switch(main_dashboardPageIndex){
 			case 0:
-				encodeToMessage(uartTxMsg, UART_BUFFER_SIZE, 1, FIRMWARE_ITEM_ID, 0.0, 0.0);
+				tmpStrLen=strlen(FW_VERSION);
+				if(tmpStrLen>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen=DASHBOARD_MESSAGE_MAX_LENGTH;
+				memcpy(&uartTxMsg[1],FW_VERSION,tmpStrLen);
+				if (tmpStrLen < DASHBOARD_MESSAGE_MAX_LENGTH) { //if required pad with spaces
+					memset(&uartTxMsg[1+tmpStrLen], ' ', UART_BUFFER_SIZE-(1+tmpStrLen)); //set to zero remaining chars
+				}
 				break;
 			default:
 				memcpy(&uartTxMsg[1], dashboard_main_menu_array[main_dashboardPageIndex],UART_BUFFER_SIZE-1);
@@ -2442,7 +2448,9 @@ int main(void){
 
 		switch(uds_params_array[function_is_diesel_enabled][dashboardPageIndex].reqId){
 			case 0: //print baccable menu
-				encodeToMessage(uartTxMsg, UART_BUFFER_SIZE, 1, FIRMWARE_ITEM_ID, 0.0, 0.0);
+				tmpStrLen=strlen(FW_VERSION);
+				if(tmpStrLen>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen=DASHBOARD_MESSAGE_MAX_LENGTH;
+				memcpy(&uartTxMsg[1],FW_VERSION,tmpStrLen);
 				break;
 			case 0x19:
 				if (uds_params_array[function_is_diesel_enabled][dashboardPageIndex].reqId == 0x19) { //if diesel engine mode status

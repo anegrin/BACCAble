@@ -8,7 +8,7 @@
 
  const uint8_t PROTO_MARKER = 0x1F;
 
-void encodeToMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId,
+void encodeToDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId,
          float firstValue, float secondValue) {
 
     uint8_t protoIndex = bufferOffset;
@@ -36,7 +36,7 @@ void encodeToMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, 
 #ifdef BHbaccable
 const uint8_t GEARS[]={'N','1','2','3','4','5','6','R','7','8','9'};
 
-bool decodeFromMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t *itemId,
+bool decodeFromDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t *itemId,
          float *firstValue, float *secondValue) {
  
     uint8_t protoIndex = bufferOffset;
@@ -135,7 +135,7 @@ bool decodeFromMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset
      float decodedFirstValue;
      float decodedSecondValue;
  
-     bool decoded = decodeFromMessage(buffer, bufferSize, bufferOffset, &decodedItemId, &decodedFirstValue,
+     bool decoded = decodeFromDashboardMessage(buffer, bufferSize, bufferOffset, &decodedItemId, &decodedFirstValue,
              &decodedSecondValue);
  
     if(decoded) {

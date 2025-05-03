@@ -17,7 +17,7 @@ void floatToBytes(float val, uint8_t* bytes) {
     memcpy(bytes, &val, DASHBOARD_SIZE_OF_FLOAT);
 }
 
-static void test_encodeToMessage(void **state) {
+static void test_encodeToDashboardMessage(void **state) {
 	(void) state; // unused
 
 	uint8_t buffer[25] = {0};
@@ -27,7 +27,7 @@ static void test_encodeToMessage(void **state) {
 	float value2 = 56.78f;
 
 	// Call the function under test
-	encodeToMessage(buffer, 25, offset, itemId, value1, value2);
+	encodeToDashboardMessage(buffer, 25, offset, itemId, value1, value2);
 
 	// Check the float values
 	uint8_t expectedValue1[4];
@@ -69,14 +69,14 @@ static void test_decodeToItemLabelNoValues(void **state) {
 	uint8_t offset = 1;
 
 	// Call the function under test
-	encodeToMessage(buffer, 25, offset, FIRMWARE_ITEM.id, 12.34f, -1);
+	encodeToDashboardMessage(buffer, 25, offset, FIRMWARE_ITEM.id, 12.34f, -1);
 
 	char labelBuffer[18];
 
 	uint8_t decodedId = decodeToItemLabel(buffer, 25, offset, labelBuffer, 18);
 	assert_int_equal(decodedId, FIRMWARE_ITEM.id);
 
-	assert_string_equal(labelBuffer, "BACCAble 3.0");
+	assert_string_equal(labelBuffer, "BACCAble ???");
 
 }
 
@@ -87,7 +87,7 @@ static void test_decodeToItemLabelOneValue(void **state) {
 	uint8_t offset = 1;
 
 	// Call the function under test
-	encodeToMessage(buffer, 25, offset, HP_ITEM.id, 12.34f, -1);
+	encodeToDashboardMessage(buffer, 25, offset, HP_ITEM.id, 12.34f, -1);
 
 	char labelBuffer[18];
 
@@ -105,7 +105,7 @@ static void test_decodeToItemLabelTwoValues(void **state) {
 	uint8_t offset = 1;
 
 	// Call the function under test
-	encodeToMessage(buffer, 25, offset, FRONT_TIRES_TEMP_ITEM.id, 12.34f, 56.78f);
+	encodeToDashboardMessage(buffer, 25, offset, FRONT_TIRES_TEMP_ITEM.id, 12.34f, 56.78f);
 
 	char labelBuffer[18];
 
@@ -119,36 +119,36 @@ static void test_decodeToItemLabelTwoValues(void **state) {
 static void test_decodeAllItems(void **state) {
 	(void) state; // unused
 
-	DashboardItem items[] = {
-		    CLEANUP_ITEM,
-		    FIRMWARE_ITEM,
-		    HP_ITEM,
-		    TORQUE_ITEM,
-		    DPF_CLOG_ITEM,
-		    DPF_TEMP_ITEM,
-		    DPF_REG_ITEM,
-		    DPF_DIST_ITEM,
-		    DPF_COUNT_ITEM,
-		    DPF_AVG_DIST_ITEM,
-			DPF_AVG_DURATION_ITEM,
-		    BATTERY_V_ITEM,
-		    BATTERY_P_ITEM,
-		    BATTERY_A_ITEM,
-		    OIL_QUALITY_ITEM,
-		    OIL_TEMP_ITEM,
-		    OIL_PRESS_ITEM,
-		    AIR_IN_ITEM,
-		    GEAR_ITEM,
-		    GEARBOX_TEMP_ITEM,
-			FRONT_TIRES_TEMP_ITEM,
-			REAR_TIRES_TEMP_ITEM,
+	uint8_t items[] = {
+		    CLEANUP_ITEM_ID,
+		    FIRMWARE_ITEM_ID,
+		    HP_ITEM_ID,
+		    TORQUE_ITEM_ID,
+		    DPF_CLOG_ITEM_ID,
+		    DPF_TEMP_ITEM_ID,
+		    DPF_REG_ITEM_ID,
+		    DPF_DIST_ITEM_ID,
+		    DPF_COUNT_ITEM_ID,
+		    DPF_AVG_DIST_ITEM_ID,
+			DPF_AVG_DURATION_ITEM_ID,
+		    BATTERY_V_ITEM_ID,
+		    BATTERY_P_ITEM_ID,
+		    BATTERY_A_ITEM_ID,
+		    OIL_QUALITY_ITEM_ID,
+		    OIL_TEMP_ITEM_ID,
+		    OIL_PRESS_ITEM_ID,
+		    AIR_IN_ITEM_ID,
+		    GEAR_ITEM_ID,
+		    GEARBOX_TEMP_ITEM_ID,
+			FRONT_TIRES_TEMP_ITEM_ID,
+			REAR_TIRES_TEMP_ITEM_ID,
 		};
 
-	uint8_t len = sizeof(items) / sizeof(DashboardItem);
+	uint8_t len = sizeof(items) / sizeof(uint8_t);
 
 	char *labels[] = {
 			"",
-			"BACCAble 3.0",
+			"BACCAble ???",
 			"Power: 12.3hp",
 			"Torque: 12nm",
 			"DPF clog: 12%",
@@ -180,11 +180,11 @@ static void test_decodeAllItems(void **state) {
 
 		memset(labelBuffer, '\0', sizeof(labelBuffer));
 
-		DashboardItem item = items[i];
+		uint8_t itemId = items[i];
 		char *label = labels[i];
-		encodeToMessage(buffer, 25, offset, item.id, 12.34f, 56.78f);
+		encodeToDashboardMessage(buffer, 25, offset, itemId, 12.34f, 56.78f);
 		uint8_t decodedId = decodeToItemLabel(buffer, 25, offset, labelBuffer, 19);
-		assert_int_equal(decodedId, item.id);
+		assert_int_equal(decodedId, itemId);
 		assert_string_equal(labelBuffer, label);
 	}
 
@@ -194,7 +194,7 @@ static void test_decodeAllItems(void **state) {
 
 int main(void) {
     const struct CMUnitTest tests[] = {
-            cmocka_unit_test(test_encodeToMessage),
+            cmocka_unit_test(test_encodeToDashboardMessage),
 	        cmocka_unit_test(test_decodeOldProto),
 	        cmocka_unit_test(test_decodeToItemLabelNoValues),
 	        cmocka_unit_test(test_decodeToItemLabelOneValue),
