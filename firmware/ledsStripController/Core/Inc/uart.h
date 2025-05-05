@@ -1,7 +1,7 @@
 #ifndef _UART_H
 #define _UART_H
 
-
+	#include <stdbool.h>
 	#include "stm32f0xx_hal.h"
 
 

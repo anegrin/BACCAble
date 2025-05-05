@@ -1,6 +1,7 @@
 #include <stdbool.h>
 
 #include "uart.h"
+#include "dashboard.h"
 #include "stm32f0xx_hal.h"
 #include "main.h"
 #include "globalVariables.h"
@@ -40,6 +41,7 @@ extern UART_HandleTypeDef huart2;
 #if defined(BHbaccable)
 	extern uint8_t dashboardPageStringArray[DASHBOARD_MESSAGE_MAX_LENGTH];
 	extern uint8_t requestToSendOneFrame; //Set it to 1 to send one frame on dashboard
+	bool shouldCleanupDashboard = false;
 	//extern uint8_t uartTxMsg[UART_BUFFER_SIZE];  //this variable contains the serial message to send
 	extern uint8_t requestToPlayChime;
 #endif
@@ -109,7 +111,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART2) {
 		// evaluate received message
     	if((rxBuffer[0]>=C1BusID) && (rxBuffer[0]<=BhBusChimeRequest)){ //if the received char indicates the beginning of a message
-			if(syncObtained){ //if we were sync, we can process the message, since the first char is correct and the sync indicates that te remaining part too is complete
+			if(syncObtained && validateRxBuffer(rxBuffer, UART_BUFFER_SIZE)){ //if we were sync, we can process the message, since the first char is correct and the sync indicates that te remaining part too is complete
 				#if defined(ACT_AS_CANABLE)
 					onboardLed_blue_on();
 				#endif
@@ -155,8 +157,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 					case BhBusIDparamString: //message directed to baccable connected to BH bus in order to transfer a parameter to print
 							#if defined(BHbaccable)
 								weCanSendAMessageReply=HAL_GetTick();
-								memcpy(&dashboardPageStringArray[0], &rxBuffer[1], DASHBOARD_MESSAGE_MAX_LENGTH); //copy array that we will use in the main
-
+								memset(dashboardPageStringArray, ' ', DASHBOARD_MESSAGE_MAX_LENGTH);
+								uint8_t decodedId = decodeToItemLabel(rxBuffer, UART_BUFFER_SIZE, 1, dashboardPageStringArray, DASHBOARD_MESSAGE_MAX_LENGTH);
+								shouldCleanupDashboard = (decodedId == CLEANUP_ITEM_ID || decodedId == UNKNOWN_ITEM_ID);
 								if (requestToSendOneFrame<=2) requestToSendOneFrame +=1;//Send one frame
 
 							#endif
@@ -268,9 +271,7 @@ uint8_t getOtherProcessorsSleepingStatus(){
 void addToUARTSendQueue(const uint8_t *data, size_t length) {
 
 	if (tx_queue->count < QUEUE_SIZE) {  // Controlla se la coda è piena
-		memset(tx_queue->tx_buffer[tx_queue->tail], 0x20, UART_BUFFER_SIZE);
-		if (length>UART_BUFFER_SIZE) length= UART_BUFFER_SIZE;
-		memcpy(tx_queue->tx_buffer[tx_queue->tail], data, length);
+		fill_buffer(tx_queue->tx_buffer[tx_queue->tail], UART_BUFFER_SIZE, data, length);
 		tx_queue->tail = (tx_queue->tail + 1) % QUEUE_SIZE;
 		tx_queue->count++;
 	} else {

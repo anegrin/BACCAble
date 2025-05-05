@@ -6,6 +6,7 @@
  *      Common functions for C1baccable
  */
 #include <functions_C1baccable.h>
+#include "dashboard.h"
 
 #if defined(C1baccable)
 	void C1baccableInitCheck(){
@@ -175,7 +176,6 @@
 	}
 
 	void sendMainDashboardPageToSlaveBaccable(){
-		uint8_t tmpStrLen=0;
 		uartTxMsg[0]= BhBusIDparamString;//first char shall be a # to talk with slave canable connected to BH can bus
 		char tmpfloatString[5]; //temp array
 		//update records if required
@@ -336,12 +336,7 @@
 		//add string to record
 		switch(main_dashboardPageIndex){
 			case 0:
-				tmpStrLen=strlen(FW_VERSION);
-				if(tmpStrLen>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen=DASHBOARD_MESSAGE_MAX_LENGTH;
-				memcpy(&uartTxMsg[1],FW_VERSION,tmpStrLen);
-				if (tmpStrLen < DASHBOARD_MESSAGE_MAX_LENGTH) { //if required pad with spaces
-					memset(&uartTxMsg[1+tmpStrLen], ' ', UART_BUFFER_SIZE-(1+tmpStrLen)); //set to zero remaining chars
-				}
+				encodeToDashboardMessage(uartTxMsg, UART_BUFFER_SIZE, 1, FIRMWARE_ITEM_ID, 0.0, 0.0);
 				break;
 			default:
 				memcpy(&uartTxMsg[1], dashboard_main_menu_array[main_dashboardPageIndex],UART_BUFFER_SIZE-1);
@@ -504,9 +499,7 @@
 
 		switch(uds_params_array[function_is_diesel_enabled][dashboardPageIndex].reqId){
 			case 0: //print baccable menu
-				tmpStrLen=strlen(FW_VERSION);
-				if(tmpStrLen>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen=DASHBOARD_MESSAGE_MAX_LENGTH;
-				memcpy(&uartTxMsg[1],FW_VERSION,tmpStrLen);
+				encodeToDashboardMessage(uartTxMsg, UART_BUFFER_SIZE, 1, FIRMWARE_ITEM_ID, 0.0, 0.0);
 				break;
 			case 0x19:
 				if (uds_params_array[function_is_diesel_enabled][dashboardPageIndex].reqId == 0x19) { //if diesel engine mode status
@@ -537,6 +530,10 @@
 				}
 				break;
 			default:
+				if (dashboardPageIndex == 0) {
+					encodeToDashboardMessage(uartTxMsg, UART_BUFFER_SIZE, 1, HP_ITEM_ID, param, 0.0);
+					break;
+				}
 				tmpStrLen=strlen((const char *)uds_params_array[function_is_diesel_enabled][dashboardPageIndex].name);
 				if(tmpStrLen>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen=DASHBOARD_MESSAGE_MAX_LENGTH; //truncate it. no space left
 				memcpy(&uartTxMsg[1], &uds_params_array[function_is_diesel_enabled][dashboardPageIndex].name,tmpStrLen); //prepare name of parameter
@@ -576,8 +573,10 @@
 				if(tmpStrLen+tmpStrLen2+tmpStrLen3>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen3=DASHBOARD_MESSAGE_MAX_LENGTH-tmpStrLen-tmpStrLen2; //truncate it. no space left
 				memcpy(&uartTxMsg[1+tmpStrLen+tmpStrLen2],&uds_params_array[function_is_diesel_enabled][dashboardPageIndex].replyMeasurementUnit,tmpStrLen3);
 		}
-		if (tmpStrLen+tmpStrLen2+tmpStrLen3 < DASHBOARD_MESSAGE_MAX_LENGTH) { //if required pad with zeros
-			memset(&uartTxMsg[1+tmpStrLen+tmpStrLen2+tmpStrLen3], ' ', UART_BUFFER_SIZE-(1+tmpStrLen+tmpStrLen2+tmpStrLen3)); //set to zero remaining chars
+		if (dashboardPageIndex != 0) {
+			if (tmpStrLen+tmpStrLen2+tmpStrLen3 < DASHBOARD_MESSAGE_MAX_LENGTH) { //if required pad with zeros
+				memset(&uartTxMsg[1+tmpStrLen+tmpStrLen2+tmpStrLen3], ' ', UART_BUFFER_SIZE-(1+tmpStrLen+tmpStrLen2+tmpStrLen3)); //set to zero remaining chars
+			}
 		}
 		addToUARTSendQueue(uartTxMsg, UART_BUFFER_SIZE);
 
@@ -585,12 +584,7 @@
 	}
 
 	void clearDashboardBaccableMenu(){
-		//prepare empty message
-		uartTxMsg[0]=BhBusIDparamString; //# to send message to baccable slave connected to BH can bus
-		for(uint8_t i=1;i<UART_BUFFER_SIZE;i++){
-			uartTxMsg[i]=0x20; //space char
-		}
-		//send it
+		encodeToDashboardMessage(uartTxMsg, UART_BUFFER_SIZE, 1, CLEANUP_ITEM_ID, 0.0, 0.0);
 		addToUARTSendQueue(uartTxMsg, UART_BUFFER_SIZE);
 
 	}
