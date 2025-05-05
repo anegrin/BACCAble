@@ -3,10 +3,13 @@
  *
  */
 
- #include "dashboard.h"
- #include "stdbool.h"
+#include "dashboard.h"
+#include "stdbool.h"
 
- const uint8_t PROTO_MARKER = 0x1F;
+const uint8_t PROTO_MARKER = 0x1F;
+
+extern uint8_t decodedDashboardId;
+
 
 void encodeToDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t bufferOffset, uint8_t itemId,
          float firstValue, float secondValue) {
