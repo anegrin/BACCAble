@@ -333,7 +333,6 @@
 	#endif
 
 	#if defined(BHbaccable)
-		extern bool shouldCleanupDashboard;
 		extern uint32_t lastSentTelematic_display_info_msg_Time; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality.
 		extern uint8_t telematic_display_info_field_totalFrameNumber; //it shall be a multiple of 3 reduced by 1 (example: 3x2-1=5) //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
 		extern uint8_t telematic_display_info_field_frameNumber; //current frame //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
