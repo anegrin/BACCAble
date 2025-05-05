@@ -143,11 +143,18 @@ bool decodeFromDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t buf
 
     if(decoded) {
         const char *format = itemLabelFormat(decodedItemId);
-
+        int written = -1;
         if (decodedItemId == GEAR_ITEM_ID) {
-            snprintf_(labelBuffer, labelBufferMaxLength, format, floatToGear(decodedFirstValue));
+        	written = snprintf_(labelBuffer, labelBufferMaxLength, format, floatToGear(decodedFirstValue));
         } else {
-            snprintf_(labelBuffer, labelBufferMaxLength, format, decodedFirstValue, decodedSecondValue);
+        	written = snprintf_(labelBuffer, labelBufferMaxLength, format, decodedFirstValue, decodedSecondValue);
+        }
+
+        if (written < 0) written = 0;
+        if (written > labelBufferMaxLength) written = labelBufferMaxLength;
+
+        for (int i = written; i < labelBufferMaxLength; ++i) {
+            labelBuffer[i] = ' ';
         }
 
         return decodedItemId;
