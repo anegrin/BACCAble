@@ -337,14 +337,14 @@
 
 	#if defined(BHbaccable)
 		extern bool shouldCleanupDashboard;
-		extern uint32_t lastSentTelematic_display_info_msg_Time;
-		extern uint8_t telematic_display_info_field_totalFrameNumber; //it shall be a multiple of 3 reduced by 1 (example: 3x2-1=5)
-		extern uint8_t telematic_display_info_field_frameNumber; //current frame
-		extern uint8_t telematic_display_info_field_infoCode;
-		extern uint8_t paramsStringCharIndex; // next char to send index.
-		extern CAN_TxHeaderTypeDef telematic_display_info_msg_header;
-		extern uint8_t telematic_display_info_msg_data[8];
-		extern uint8_t requestToSendOneFrame; //set to 1 to send one frame on dashboard
+		extern uint32_t lastSentTelematic_display_info_msg_Time; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality.
+		extern uint8_t telematic_display_info_field_totalFrameNumber; //it shall be a multiple of 3 reduced by 1 (example: 3x2-1=5) //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
+		extern uint8_t telematic_display_info_field_frameNumber; //current frame //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
+		extern uint8_t telematic_display_info_field_infoCode; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
+		extern uint8_t paramsStringCharIndex; // next char to send index - Used with SHOW_PARAMS_ON_DASHBOARD define functionality.
+		extern CAN_TxHeaderTypeDef telematic_display_info_msg_header; //used when SHOW_PARAMS_ON_DASHBOARD is defined
+		extern uint8_t telematic_display_info_msg_data[8]; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
+		extern uint8_t requestToSendOneFrame; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality //set to 1 to send one frame on dashboard
 
 		//Message to generate sound indication (chime)
 		extern uint8_t CHIME_msg_data[8];

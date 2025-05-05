@@ -534,6 +534,10 @@
 					encodeToDashboardMessage(uartTxMsg, UART_BUFFER_SIZE, 1, HP_ITEM_ID, param, 0.0);
 					break;
 				}
+				if (dashboardPageIndex == 1) {
+					encodeToDashboardMessage(uartTxMsg, UART_BUFFER_SIZE, 1, TORQUE_ITEM_ID, param, 0.0);
+					break;
+				}
 				tmpStrLen=strlen((const char *)uds_params_array[function_is_diesel_enabled][dashboardPageIndex].name);
 				if(tmpStrLen>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen=DASHBOARD_MESSAGE_MAX_LENGTH; //truncate it. no space left
 				memcpy(&uartTxMsg[1], &uds_params_array[function_is_diesel_enabled][dashboardPageIndex].name,tmpStrLen); //prepare name of parameter
@@ -573,7 +577,7 @@
 				if(tmpStrLen+tmpStrLen2+tmpStrLen3>DASHBOARD_MESSAGE_MAX_LENGTH) tmpStrLen3=DASHBOARD_MESSAGE_MAX_LENGTH-tmpStrLen-tmpStrLen2; //truncate it. no space left
 				memcpy(&uartTxMsg[1+tmpStrLen+tmpStrLen2],&uds_params_array[function_is_diesel_enabled][dashboardPageIndex].replyMeasurementUnit,tmpStrLen3);
 		}
-		if (dashboardPageIndex != 0) {
+		if (dashboardPageIndex > 1) {
 			if (tmpStrLen+tmpStrLen2+tmpStrLen3 < DASHBOARD_MESSAGE_MAX_LENGTH) { //if required pad with zeros
 				memset(&uartTxMsg[1+tmpStrLen+tmpStrLen2+tmpStrLen3], ' ', UART_BUFFER_SIZE-(1+tmpStrLen+tmpStrLen2+tmpStrLen3)); //set to zero remaining chars
 			}

@@ -8,6 +8,7 @@
 #include "functions_BHbaccable.h"
 
 #if defined(BHbaccable)
+	//todo
 	uint8_t telematic_display_info_msg_data_cleanup[8] = { 0x00, 0x11, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00 };
 
 	void BHbaccableInitCheck(){
@@ -56,9 +57,6 @@
 					onboardLed_blue_on();
 				}
 			}
-		} else if (shouldCleanupDashboard) {
-			can_tx(&telematic_display_info_msg_header, telematic_display_info_msg_data_cleanup);
-			shouldCleanupDashboard = false;
 		}
 	}
 #endif

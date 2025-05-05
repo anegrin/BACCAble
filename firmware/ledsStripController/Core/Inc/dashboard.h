@@ -53,7 +53,7 @@
  static const DashboardItem HP_ITEM = { .id = HP_ITEM_ID, .pattern = "Power: %.1fhp" };
  static const DashboardItem TORQUE_ITEM = { .id = TORQUE_ITEM_ID, .pattern = "Torque: %.0fnm" };
  static const DashboardItem DPF_CLOG_ITEM = { .id = DPF_CLOG_ITEM_ID, .pattern = "DPF clog: %.0f%%" };
- static const DashboardItem DPF_TEMP_ITEM = { .id = DPF_TEMP_ITEM_ID, .pattern = "DPF temp: %.0f°C" };
+ static const DashboardItem DPF_TEMP_ITEM = { .id = DPF_TEMP_ITEM_ID, .pattern = "DPF temp: %.0f""\xB0""C" };
  static const DashboardItem DPF_REG_ITEM = { .id = DPF_REG_ITEM_ID, .pattern = "DPF reg: %.0f%%" };
  static const DashboardItem DPF_DIST_ITEM = { .id = DPF_DIST_ITEM_ID, .pattern = "DPF dist: %.0fkm" };
  static const DashboardItem DPF_COUNT_ITEM = { .id = DPF_COUNT_ITEM_ID, .pattern = "DPF count: %.0f" };
@@ -63,13 +63,13 @@
  static const DashboardItem BATTERY_P_ITEM = { .id = BATTERY_P_ITEM_ID, .pattern = "Battery: %.0f%%" };
  static const DashboardItem BATTERY_A_ITEM = { .id = BATTERY_A_ITEM_ID, .pattern = "Battery: %.2fA" };
  static const DashboardItem OIL_QUALITY_ITEM = { .id = OIL_QUALITY_ITEM_ID, .pattern = "Oil deg: %.0f%%" };
- static const DashboardItem OIL_TEMP_ITEM = { .id = OIL_TEMP_ITEM_ID, .pattern = "Oil temp: %.0f°C" };
+ static const DashboardItem OIL_TEMP_ITEM = { .id = OIL_TEMP_ITEM_ID, .pattern = "Oil temp: %.0f""\xB0""C" };
  static const DashboardItem OIL_PRESS_ITEM = { .id = OIL_PRESS_ITEM_ID, .pattern = "Oil press: %.1fbar" };
- static const DashboardItem AIR_IN_ITEM = { .id = AIR_IN_ITEM_ID, .pattern = "Air in temp: %.0f°C" };
+ static const DashboardItem AIR_IN_ITEM = { .id = AIR_IN_ITEM_ID, .pattern = "Air in temp: %.0f""\xB0""C" };
  static const DashboardItem GEAR_ITEM = { .id = GEAR_ITEM_ID, .pattern = "Current gear: %c" };//will have dedicated decoder
- static const DashboardItem GEARBOX_TEMP_ITEM = { .id = GEARBOX_TEMP_ITEM_ID, .pattern = "Gearbox: %.0f°C" };
- static const DashboardItem FRONT_TIRES_TEMP_ITEM = { .id = FRONT_TIRES_TEMP_ITEM_ID, .pattern = "%.0f°C F.T. %.0f°C" };
- static const DashboardItem REAR_TIRES_TEMP_ITEM = { .id = REAR_TIRES_TEMP_ITEM_ID, .pattern = "%.0f°C R.T. %.0f°C" };
+ static const DashboardItem GEARBOX_TEMP_ITEM = { .id = GEARBOX_TEMP_ITEM_ID, .pattern = "Gearbox: %.0f""\xB0""C" };
+ static const DashboardItem FRONT_TIRES_TEMP_ITEM = { .id = FRONT_TIRES_TEMP_ITEM_ID, .pattern = "%.0f""\xB0""C F.T. %.0f""\xB0""C" };
+ static const DashboardItem REAR_TIRES_TEMP_ITEM = { .id = REAR_TIRES_TEMP_ITEM_ID, .pattern = "%.0f""\xB0""C R.T. %.0f""\xB0""C" };
  #endif
 
  #endif /* INC_DASHBOARD_H_ */

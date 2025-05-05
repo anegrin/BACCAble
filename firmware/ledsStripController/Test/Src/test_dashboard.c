@@ -75,8 +75,8 @@ static void test_decodeToItemLabelNoValues(void **state) {
 
 	uint8_t decodedId = decodeToItemLabel(buffer, 25, offset, labelBuffer, 18);
 	assert_int_equal(decodedId, FIRMWARE_ITEM.id);
-
-	assert_string_equal(labelBuffer, "BACCAble " BUILD_VERSION);
+	snprintf_(labelBuffer, 18, "%s", labelBuffer);//getting the null terminator just for the testing, string will be 1 char shorter
+	assert_string_equal(labelBuffer, "BACCAble " BUILD_VERSION "    ");
 
 }
 
@@ -94,7 +94,8 @@ static void test_decodeToItemLabelOneValue(void **state) {
 	uint8_t decodedId = decodeToItemLabel(buffer, 25, offset, labelBuffer, 18);
 	assert_int_equal(decodedId, HP_ITEM.id);
 
-	assert_string_equal(labelBuffer, "Power: 12.3hp");
+	snprintf_(labelBuffer, 18, "%s", labelBuffer);//getting the null terminator just for the testing, string will be 1 char shorter
+	assert_string_equal(labelBuffer, "Power: 12.3hp    ");
 
 }
 
@@ -112,7 +113,8 @@ static void test_decodeToItemLabelTwoValues(void **state) {
 	uint8_t decodedId = decodeToItemLabel(buffer, 25, offset, labelBuffer, 18);
 	assert_int_equal(decodedId, FRONT_TIRES_TEMP_ITEM.id);
 
-	assert_string_equal(labelBuffer, "12°C F.T. 57°C");// 2nd value is rounded
+	snprintf_(labelBuffer, 18, "%s", labelBuffer);//getting the null terminator just for the testing, string will be 1 char shorter
+	assert_string_equal(labelBuffer, "12""\xB0""C F.T. 57""\xB0""C   ");// 2nd value is rounded
 
 }
 
@@ -147,28 +149,28 @@ static void test_decodeAllItems(void **state) {
 	uint8_t len = sizeof(items) / sizeof(uint8_t);
 
 	char *labels[] = {
-			"",
-			"BACCAble " BUILD_VERSION,
-			"Power: 12.3hp",
-			"Torque: 12nm",
-			"DPF clog: 12%",
-			"DPF temp: 12°C",
-			"DPF reg: 12%",
-			"DPF dist: 12km",
-			"DPF count: 12",
-			"DPF avg: 12km",
-			"DPF avg: 12min",
-			"Battery: 12.34V",
-			"Battery: 12%",
-			"Battery: 12.34A",
-			"Oil deg: 12%",
-			"Oil temp: 12°C",
-			"Oil press: 12.3bar",
-			"Air in temp: 12°C",
-			"Current gear: -",
-			"Gearbox: 12°C",
-			"12°C F.T. 57°C",
-			"12°C R.T. 57°C",
+			"                  ",
+			"BACCAble " BUILD_VERSION "     ",
+			"Power: 1.2hp      ",
+			"Torque: 1nm       ",
+			"DPF clog: 1%      ",
+			"DPF temp: 1""\xB0""C     ",
+			"DPF reg: 1%       ",
+			"DPF dist: 1km     ",
+			"DPF count: 1      ",
+			"DPF avg: 1km      ",
+			"DPF avg: 1min     ",
+			"Battery: 1.23V    ",
+			"Battery: 1%       ",
+			"Battery: 1.23A    ",
+			"Oil deg: 1%       ",
+			"Oil temp: 1""\xB0""C     ",
+			"Oil press: 1.2bar ",
+			"Air in temp: 1""\xB0""C  ",
+			"Current gear: 1   ",
+			"Gearbox: 1""\xB0""C      ",
+			"1""\xB0""C F.T. 57""\xB0""C     ",
+			"1""\xB0""C R.T. 57""\xB0""C     ",
 		};
 
 	uint8_t buffer[25] = {0};
@@ -182,8 +184,9 @@ static void test_decodeAllItems(void **state) {
 
 		uint8_t itemId = items[i];
 		char *label = labels[i];
-		encodeToDashboardMessage(buffer, 25, offset, itemId, 12.34f, 56.78f);
-		uint8_t decodedId = decodeToItemLabel(buffer, 25, offset, labelBuffer, 19);
+		encodeToDashboardMessage(buffer, 25, offset, itemId, 1.234f, 56.78f);
+		uint8_t decodedId = decodeToItemLabel(buffer, 25, offset, labelBuffer, 18);
+		snprintf_(labelBuffer, 19, "%s", labelBuffer);//getting the null terminator just for the testing, string will be 1 char shorter
 		assert_int_equal(decodedId, itemId);
 		assert_string_equal(labelBuffer, label);
 	}
