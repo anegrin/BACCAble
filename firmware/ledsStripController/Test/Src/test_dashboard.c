@@ -131,8 +131,8 @@ static void test_decodeAllItems(void **state) {
 		    DPF_REG_ITEM_ID,
 		    DPF_DIST_ITEM_ID,
 		    DPF_COUNT_ITEM_ID,
-		    DPF_AVG_DIST_ITEM_ID,
-			DPF_AVG_DURATION_ITEM_ID,
+		    DPF_MEAN_DIST_ITEM_ID,
+			DPF_MEAN_DURATION_ITEM_ID,
 		    BATTERY_V_ITEM_ID,
 		    BATTERY_P_ITEM_ID,
 		    BATTERY_A_ITEM_ID,
@@ -158,12 +158,12 @@ static void test_decodeAllItems(void **state) {
 			"DPF reg: 1%       ",
 			"DPF dist: 1km     ",
 			"DPF count: 1      ",
-			"DPF avg: 1km      ",
-			"DPF avg: 1min     ",
+			"DPF mean: 1km     ",
+			"DPF mean: 1min    ",
 			"Battery: 1.23V    ",
 			"Battery: 1%       ",
 			"Battery: 1.23A    ",
-			"Oil deg: 1%       ",
+			"Oil qlt: 1%       ",
 			"Oil temp: 1""\xB0""C     ",
 			"Oil press: 1.2bar ",
 			"Air in temp: 1""\xB0""C  ",
@@ -180,8 +180,7 @@ static void test_decodeAllItems(void **state) {
 
 	for (int i = 0; i<len; i++) {
 
-		memset(labelBuffer, '\0', sizeof(labelBuffer));
-
+		memset(labelBuffer, ' ', sizeof(labelBuffer));
 		uint8_t itemId = items[i];
 		char *label = labels[i];
 		encodeToDashboardMessage(buffer, 25, offset, itemId, 1.234f, 56.78f);
