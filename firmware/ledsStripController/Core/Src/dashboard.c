@@ -44,7 +44,7 @@ bool decodeFromDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t buf
 
     uint8_t protoIndex = bufferOffset;
     if (bufferSize <= protoIndex || buffer[protoIndex] != PROTO_MARKER) {
-        *itemId = 0;
+        *itemId = UNKNOWN_ITEM_ID;
         *firstValue = NAN_FLOAT;
         *secondValue = NAN_FLOAT;
         return false;
@@ -54,7 +54,13 @@ bool decodeFromDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t buf
      if (bufferSize > itemIdIndex) {
          *itemId = buffer[itemIdIndex];  // Decode itemId
      } else {
-         *itemId = 0;
+         *itemId = UNKNOWN_ITEM_ID;
+     }
+
+     if (itemId == CLEANUP_ITEM_ID) {
+         *firstValue = NAN_FLOAT;
+         *secondValue = NAN_FLOAT;
+         return true;
      }
 
      uint8_t firstValueIndex = itemIdIndex + 1;
@@ -93,10 +99,10 @@ bool decodeFromDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t buf
 	             return DPF_DIST_ITEM.pattern;
 	         case DPF_COUNT_ITEM_ID:
 	             return DPF_COUNT_ITEM.pattern;
-	         case DPF_AVG_DIST_ITEM_ID:
-	             return DPF_AVG_DIST_ITEM.pattern;
-	         case DPF_AVG_DURATION_ITEM_ID:
-	             return DPF_AVG_DURATION_ITEM.pattern;
+	         case DPF_MEAN_DIST_ITEM_ID:
+	             return DPF_MEAN_DIST_ITEM.pattern;
+	         case DPF_MEAN_DURATION_ITEM_ID:
+	             return DPF_MEAN_DURATION_ITEM.pattern;
 	         case BATTERY_V_ITEM_ID:
 	             return BATTERY_V_ITEM.pattern;
 	         case BATTERY_P_ITEM_ID:
@@ -142,22 +148,26 @@ bool decodeFromDashboardMessage(uint8_t *buffer, uint8_t bufferSize, uint8_t buf
              &decodedSecondValue);
 
     if(decoded) {
-        const char *format = itemLabelFormat(decodedItemId);
-        int written = -1;
-        if (decodedItemId == GEAR_ITEM_ID) {
-        	written = snprintf_(labelBuffer, labelBufferMaxLength, format, floatToGear(decodedFirstValue));
-        } else {
-        	written = snprintf_(labelBuffer, labelBufferMaxLength, format, decodedFirstValue, decodedSecondValue);
-        }
 
-        if (written < 0) written = 0;
-        if (written > labelBufferMaxLength) written = labelBufferMaxLength;
+    	if (decodedItemId == CLEANUP_ITEM_ID) {
+    		memset(labelBuffer, ' ', labelBufferMaxLength);
+    		return decodedItemId;
+    	} else {
+			const char *format = itemLabelFormat(decodedItemId);
+			int written = -1;
+			if (decodedItemId == GEAR_ITEM_ID) {
+				written = snprintf_(labelBuffer, labelBufferMaxLength, format, floatToGear(decodedFirstValue));
+			} else {
+				written = snprintf_(labelBuffer, labelBufferMaxLength, format, decodedFirstValue, decodedSecondValue);
+			}
 
-        for (int i = written; i < labelBufferMaxLength; ++i) {
-            labelBuffer[i] = ' ';
-        }
+			if (written < 0) written = 0;
+			if (written < labelBufferMaxLength) {
+				memset(&labelBuffer[written], ' ', labelBufferMaxLength - written);
+			}
 
-        return decodedItemId;
+			return decodedItemId;
+    	}
     } else {
     	//old protocol, it's just a string
         snprintf_(labelBuffer, labelBufferMaxLength, "%s", buffer + 1);

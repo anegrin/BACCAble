@@ -39,7 +39,7 @@ extern uint8_t front_brake_forced;
 extern UART_HandleTypeDef huart2;
 #if defined(BHbaccable)
 	//SHOW_PARAMS_ON_DASHBOARD
-	extern char dashboardPageStringArray[DASHBOARD_MESSAGE_MAX_LENGTH];
+	extern char dashboardPageStringArray[DASHBOARD_BUFFER_SIZE];
 	extern uint8_t requestToSendOneFrame; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality //set to 1 to send one frame on dashboard
 	//extern uint8_t uartTxMsg[UART_BUFFER_SIZE];  //this variable contains the serial message to send
 	extern uint8_t requestToPlayChime;
@@ -160,8 +160,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 					case BhBusIDparamString: //message directed to baccable connected to BH bus in order to transfer a parameter to print
 							#if defined(BHbaccable)
 								weCanSendAMessageReply=HAL_GetTick();
-								memset(dashboardPageStringArray, ' ', DASHBOARD_MESSAGE_MAX_LENGTH);
-								decodeToItemLabel(rxBuffer, UART_BUFFER_SIZE, 1, dashboardPageStringArray, DASHBOARD_MESSAGE_MAX_LENGTH);
+								memset(dashboardPageStringArray, ' ', DASHBOARD_BUFFER_SIZE);
+								uint8_t decodedId = decodeToItemLabel(rxBuffer, UART_BUFFER_SIZE, 1, dashboardPageStringArray, DASHBOARD_BUFFER_SIZE);
+								shouldCleanupDashboard = (decodedId == CLEANUP_ITEM_ID);
 								if (requestToSendOneFrame<=2) requestToSendOneFrame +=1;//Send one frame
 
 							#endif
