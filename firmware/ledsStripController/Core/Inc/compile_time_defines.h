@@ -62,7 +62,8 @@
 	#else
 		#define DASHBOARD_MESSAGE_MAX_LENGTH 24
 	#endif
-
+	#define DASHBOARD_BUFFER_SIZE DASHBOARD_MESSAGE_MAX_LENGTH+1//because of optional \0 terminator
+ 
 	//This section sets ACT_AS_CANABLE if no option was selected
 	#if !defined(ACT_AS_CANABLE) && !defined(C1baccable) && !defined(C2baccable) && !defined(BHbaccable)
 		#define ACT_AS_CANABLE
@@ -256,6 +257,9 @@
 
 		#define SHOW_PARAMS_ON_DASHBOARD // used on new board to print text on dashboard (or if you connected together another baccable)
 		#define CLEAR_FAULTS_ENABLED //if enabled the C1baccable menu will allow to reset faults thru BHbaccable too
+		#ifndef DISPLAY_INFO_CODE
+		#define DISPLAY_INFO_CODE 0x09
+		#endif
 	#endif
 
 	//note: with the following we avoid some combinations of defines.
