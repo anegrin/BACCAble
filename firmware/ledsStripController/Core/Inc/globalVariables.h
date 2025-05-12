@@ -272,6 +272,7 @@
 		extern uint8_t telematic_display_info_field_infoCode; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
 		extern uint8_t paramsStringCharIndex; // next char to send index - Used with SHOW_PARAMS_ON_DASHBOARD define functionality.
 		extern CAN_TxHeaderTypeDef telematic_display_info_msg_header; //used when SHOW_PARAMS_ON_DASHBOARD is defined
+		extern bool shouldCleanupDashboard;
 		extern uint8_t telematic_display_info_msg_data[8]; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
 		extern uint8_t requestToSendOneFrame; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality //set to 1 to send one frame on dashboard
 
@@ -290,7 +291,7 @@
 		extern CAN_TxHeaderTypeDef clearFaults_msg_header;
 
 		//
-		extern uint8_t dashboardPageStringArray[DASHBOARD_MESSAGE_MAX_LENGTH]; //used if SHOW_PARAMS_ON_DASHBOARD or SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE is declared - it contains string to print on dashboard
+		extern char dashboardPageStringArray[DASHBOARD_BUFFER_SIZE]; //used if SHOW_PARAMS_ON_DASHBOARD or SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE is declared - it contains string to print on dashboard
 
 		extern float currentSpeed_km_h; //current vehicle speed
 
