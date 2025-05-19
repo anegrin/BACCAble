@@ -52,8 +52,8 @@
 #ifdef LARGE_DISPLAY
  static const DashboardItem CLEANUP_ITEM = { .id = CLEANUP_ITEM_ID };
  static const DashboardItem FIRMWARE_ITEM = { .id = FIRMWARE_ITEM_ID, .pattern = "BACCAble " BUILD_VERSION };
- static const DashboardItem HP_ITEM = { .id = HP_ITEM_ID, .pattern = "Power: %.1fhp" };
- static const DashboardItem TORQUE_ITEM = { .id = TORQUE_ITEM_ID, .pattern = "Torque: %.0fnm" };
+ static const DashboardItem HP_ITEM = { .id = HP_ITEM_ID, .pattern = "Power of love: %.1fhp" };//test
+ static const DashboardItem TORQUE_ITEM = { .id = TORQUE_ITEM_ID, .pattern = "Torquemada: %.0fnm" };//test
  static const DashboardItem DPF_CLOG_ITEM = { .id = DPF_CLOG_ITEM_ID, .pattern = "DPF clogging: %.0f%%" };
  static const DashboardItem DPF_TEMP_ITEM = { .id = DPF_TEMP_ITEM_ID, .pattern = "DPF temp: %.0f""\xB0""C" };
  static const DashboardItem DPF_REG_ITEM = { .id = DPF_REG_ITEM_ID, .pattern = "DPF regeneration: %.0f%%" };
