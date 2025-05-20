@@ -48,7 +48,7 @@ jobs:
             echo "Tag ${TAG} already exists."
           fi
 
-      - name: Compile BH
+      - name: Compile BH Small Display
         working-directory: ./firmware/ledsStripController
         run: |
           CFLAGS='-DBUILD_VERSION=\"${TAG}\" -DRELEASE_FLAVOR=BH_FLAVOR -DBH_FLAVOR=1' make all
@@ -86,7 +86,8 @@ jobs:
           name: Stable Version ${{ env.TAG }}
 
           files: |
-            ./firmware/ledsStripController/baccableBH_stable.elf
+            ./firmware/ledsStripController/baccableBHsmall_stable.elf
+            ./firmware/ledsStripController/baccableBHlarge_stable.elf
             ./firmware/ledsStripController/baccableC1diesel_stable.elf
             ./firmware/ledsStripController/baccableC1gasoline_stable.elf
             ./firmware/ledsStripController/baccableC2_stable.elf

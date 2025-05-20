@@ -337,20 +337,19 @@ const char *FW_VERSION=_FW_VERSION;
 #endif
 
 #if defined(BHbaccable)
-	uint32_t lastSentTelematic_display_info_msg_Time=0; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality.
-	uint8_t telematic_display_info_field_totalFrameNumber=(DASHBOARD_MESSAGE_MAX_LENGTH / 3) - 1; //it shall be a multiple of 3 reduced by 1 (example: 3x2-1=5) //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
-	uint8_t telematic_display_info_field_frameNumber=0; //current frame //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
-	uint8_t telematic_display_info_field_infoCode=DISPLAY_INFO_CODE; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
-	uint8_t paramsStringCharIndex=0; // next char to send index - Used with SHOW_PARAMS_ON_DASHBOARD define functionality.
-	CAN_TxHeaderTypeDef telematic_display_info_msg_header={.IDE=CAN_ID_STD, .RTR = CAN_RTR_DATA, .StdId=0x090, .DLC=8}; //used when SHOW_PARAMS_ON_DASHBOARD is defined
-	uint8_t telematic_display_info_msg_data[8]; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality
-	uint8_t requestToSendOneFrame=0; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality //set to 1 to send one frame on dashboard
+	uint32_t lastSentTelematic_display_info_msg_Time=0;
+	uint8_t telematic_display_info_field_totalFrameNumber=(DASHBOARD_MESSAGE_MAX_LENGTH / 3) - 1; //it shall be a multiple of 3 reduced by 1 (example: 3x2-1=5)
+	uint8_t telematic_display_info_field_frameNumber=0; //current frame
+	uint8_t telematic_display_info_field_infoCode=DISPLAY_INFO_CODE;
+	uint8_t paramsStringCharIndex=0; // next char to send index
+	CAN_TxHeaderTypeDef telematic_display_info_msg_header={.IDE=CAN_ID_STD, .RTR = CAN_RTR_DATA, .StdId=0x090, .DLC=8};
+	uint8_t telematic_display_info_msg_data[8];
+	uint8_t requestToSendOneFrame=0; //set to 1 to send one frame on dashboard
 
 	//Message to generate sound indication (chime)
 	uint8_t CHIME_msg_data[8];
 	CAN_TxHeaderTypeDef CHIME_msg_header={.IDE=CAN_ID_STD, .RTR = CAN_RTR_DATA, .StdId=0x5AC, .DLC=8};
 	uint8_t requestToPlayChime=0;
-	bool shouldCleanupDashboard = false;
 #endif
 
 //CLEAR_FAULTS_ENABLED
@@ -361,7 +360,7 @@ uint8_t clearFaults_msg_data[5]={0x04,0x14,0xff,0xff,0xff}; //message to clear D
 CAN_TxHeaderTypeDef clearFaults_msg_header={.IDE=CAN_ID_EXT, .RTR = CAN_RTR_DATA, .ExtId=0x18DA00F1, .DLC=5};
 
 //
-char dashboardPageStringArray[DASHBOARD_BUFFER_SIZE]={' ',}; //used if SHOW_PARAMS_ON_DASHBOARD or SHOW_PARAMS_ON_DASHBOARD_MASTER_BACCABLE is declared - it contains string to print on dashboard
+char dashboardPageStringArray[DASHBOARD_BUFFER_SIZE]={' ',}; //it contains string to print on dashboard
 
 float currentSpeed_km_h=0; //current vehicle speed
 

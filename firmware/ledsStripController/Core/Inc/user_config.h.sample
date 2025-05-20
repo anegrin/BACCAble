@@ -39,22 +39,24 @@
 	// #define DISABLE_DPF_REGEN_SOUND_ALERT	// if uncommented it will disable sound alert in "DPF regeneration alert functionality"
 
 
-//endabò DPF alert
-#define REGENERATION_ALERT_ENABLED
 
-//disable visual alert for DPF regeneration
-#define DISABLE_DPF_REGEN_VISUAL_ALERT
 
-//disable sound alert for DPF regeneration
-#define DISABLE_DPF_REGEN_SOUND_ALERT
 
-//use long strings on dashboard
-#define LARGE_DISPLAY
+	// The following defines are used, if uncommented, by C2baccable board:
 
-//example infocode = usb
-//0x02=FM radio, 0x03=AM Radio, 0x05=Aux, 0x06=left USB, 0x07=Right USB, 
-//0x08=Center USB, 0x09=Bluetooth, 0x12=phone connected, 0x13=phone disconnected, 
-//0x15=call in progress, 0x17=call in wait, 0x18=call terminated, 0x11=clear display, ...
-#define DISPLAY_INFO_CODE 0x08
+	// #define DISABLE_ESC_TC_CUSTOMIZATOR 		// if uncommented it will disable "ESC/TC" functionality.
+	// #define DISABLE_DYNO_MODE 				// if uncommented it will disable "DYNO" functionality.
+	// #define DISABLE_FRONT_BRAKE_FORCER 		// if uncommented it will disable "front brake forcer" functionality.
+	// #define DISABLE_CLEAR_FAULTS_C2 			// if uncommented it will disable "clear faults" functionality.
+
+
+
+
+
+	// The following defines are used, if uncommented, by BHbaccable board:
+
+	// #define DISABLE_CLEAR_FAULTS_BH 			// if uncommented it will disable "clear faults" functionality.
+
+	// #define DISPLAY_INFO_CODE 0x08			// if uncommented it will set dashboard icon to user's preferred value
 
 #endif /* INC_USER_CONFIG_H_SAMPLE_ */

@@ -39,9 +39,8 @@ extern uint8_t launch_assist_enabled;
 
 extern UART_HandleTypeDef huart2;
 #if defined(BHbaccable)
-	//SHOW_PARAMS_ON_DASHBOARD
 	extern char dashboardPageStringArray[DASHBOARD_BUFFER_SIZE];
-	extern uint8_t requestToSendOneFrame; //--// used with SHOW_PARAMS_ON_DASHBOARD define functionality //set to 1 to send one frame on dashboard
+	extern uint8_t requestToSendOneFrame; //Set it to 1 to send one frame on dashboard
 	bool shouldCleanupDashboard = false;
 	//extern uint8_t uartTxMsg[UART_BUFFER_SIZE];  //this variable contains the serial message to send
 	extern uint8_t requestToPlayChime;

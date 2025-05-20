@@ -10,7 +10,7 @@
 	#include "string.h"
 	//#include "error.h"
 
-	#define UART_BUFFER_SIZE DASHBOARD_MESSAGE_MAX_LENGTH + 2
+	#define UART_BUFFER_SIZE DASHBOARD_BUFFER_SIZE + 1
 
 
 	

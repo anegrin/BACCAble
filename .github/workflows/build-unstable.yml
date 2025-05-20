@@ -39,11 +39,17 @@ jobs:
       - name: Echo GITHUB_ENV
         run: echo ${{ env.CFLAGS }}
 
-      - name: Compile BH
+      - name: Compile BH Small Display
         working-directory: ./firmware/ledsStripController
         run: |
           CFLAGS='${{ env.CFLAGS }} -DBUILD_VERSION=\"${{ env.COMMIT_SHORT_SHA }}\" -DRELEASE_FLAVOR=BH_FLAVOR -DBH_FLAVOR=1' make all
-          cp build/baccable-*.elf baccableBH_beta.elf
+          cp build/baccable-*.elf baccableBHsmall_unstable.elf
+          
+      - name: Compile BH Large Display
+        working-directory: ./firmware/ledsStripController
+        run: |
+          CFLAGS='${{ env.CFLAGS }} -DBUILD_VERSION=\"${{ env.COMMIT_SHORT_SHA }}\" -DRELEASE_FLAVOR=BH_FLAVOR -DBH_FLAVOR=1 -DLARGE_DISPLAY' make all
+          cp build/baccable-*.elf baccableBHlarge_unstable.elf
           
       - name: Compile C1 Diesel
         working-directory: ./firmware/ledsStripController
@@ -83,8 +89,9 @@ jobs:
           tag_name: ${{github.event.inputs.TAG_NAME}}
           name: Beta Version ${{ env.COMMIT_SHORT_SHA }}
           files: |
-            ./firmware/ledsStripController/baccableBH_beta.elf
-            ./firmware/ledsStripController/baccableC1diesel_beta.elf
-            ./firmware/ledsStripController/baccableC1gasoline_beta.elf
-            ./firmware/ledsStripController/baccableC2_beta.elf
-            ./firmware/ledsStripController/baccableCANable_beta.elf
+            ./firmware/ledsStripController/baccableBHsmall_unstable.elf
+            ./firmware/ledsStripController/baccableBHlarge_unstable.elf
+            ./firmware/ledsStripController/baccableC1diesel_unstable.elf
+            ./firmware/ledsStripController/baccableC1gasoline_unstable.elf
+            ./firmware/ledsStripController/baccableC2_unstable.elf
+            ./firmware/ledsStripController/baccableCANable_unstable.elf
