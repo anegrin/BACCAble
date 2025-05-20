@@ -18,11 +18,17 @@ jobs:
       - name: Clone
         uses: actions/checkout@v3
 
-      - name: Compile BH
+      - name: Compile BH Small Display
         working-directory: ./firmware/ledsStripController
         run: |
           CFLAGS='-DBUILD_VERSION=\"${{ github.ref_name }}\" -DRELEASE_FLAVOR=BH_FLAVOR -DBH_FLAVOR=1' make all
-          cp build/baccable-*.elf baccableBH_stable.elf
+          cp build/baccable-*.elf baccableBHsmall_stable.elf
+
+      - name: Compile BH Large Display
+        working-directory: ./firmware/ledsStripController
+        run: |
+          CFLAGS='-DBUILD_VERSION=\"${{ github.ref_name }}\" -DRELEASE_FLAVOR=BH_FLAVOR -DBH_FLAVOR=1 -DLARGE_DISPLAY' make all
+          cp build/baccable-*.elf baccableBHlarge_stable.elf
           
       - name: Compile C1 Diesel
         working-directory: ./firmware/ledsStripController
@@ -54,7 +60,8 @@ jobs:
           prerelease: false
           name: Stable ${{ github.ref_name }}
           files: |
-            ./firmware/ledsStripController/baccableBH_stable.elf
+            ./firmware/ledsStripController/baccableBHsmall_stable.elf
+            ./firmware/ledsStripController/baccableBHlarge_stable.elf
             ./firmware/ledsStripController/baccableC1diesel_stable.elf
             ./firmware/ledsStripController/baccableC1gasoline_stable.elf
             ./firmware/ledsStripController/baccableC2_stable.elf
